@@ -41,3 +41,13 @@ jobs:
         run: |
           aws cloudfront create-invalidation \
             --distribution-id $CLOUD_FRONT_ID --paths "/*"
+
+      - name: action-slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{job.status}}
+          fields: repo, ref, workflow, message, author
+          author_name: 웹배포알림
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
