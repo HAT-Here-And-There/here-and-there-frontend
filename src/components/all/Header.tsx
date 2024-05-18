@@ -1,22 +1,27 @@
-import React from 'react';
-import MainLogo from './Logo';
+import Logo from '@components/Main/Logo';
 
-const Header: React.FC = () => {
+export default function Header() {
   return (
     <header className="bg-white-800 text-black p-2">
       <div className="container mx-auto flex items-center">
         <div className="title">
-          <MainLogo/>
+          <Logo />
         </div>
         <nav>
           <ul className="flex space-x-12">
             <li>
-              <a href="/select-place" className="hover:underline font-custom font-color">
+              <a
+                href="/select-place"
+                className="hover:underline font-custom font-color"
+              >
                 장소목록
               </a>
             </li>
             <li>
-              <a href="/travel-plans-list" className="hover:underline font-custom">
+              <a
+                href="/travel-plans-list"
+                className="hover:underline font-custom"
+              >
                 여행계획
               </a>
             </li>
@@ -35,6 +40,4 @@ const Header: React.FC = () => {
       </div>
     </header>
   );
-};
-
-export default Header;
+}
