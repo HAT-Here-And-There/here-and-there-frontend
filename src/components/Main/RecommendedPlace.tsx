@@ -7,7 +7,9 @@ export default function RecommendedPlace() {
 
   useEffect(() => {
     async function getData() {
-      const response = await fetch('http://172.233.70.162/tour/places?size=8');
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/places?size=8`
+      );
       const result = await response.json();
       setRecommendedPlaces(result.places);
     }
