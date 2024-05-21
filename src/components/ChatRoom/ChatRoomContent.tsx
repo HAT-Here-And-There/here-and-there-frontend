@@ -22,5 +22,7 @@ export default function ChatRoomContent({
     getChatRoomData();
   }, []);
 
-  return <></>;
+  console.log(chatRoomData);
+
+  return <>This is chat room content</>;
 }
