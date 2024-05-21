@@ -24,6 +24,8 @@ jobs:
       - name: build files
         working-directory: ./
         run: npm run build
+        env:
+          VITE_BACKEND_DOMAIN: ${{ secrets.VITE_BACKEND_DOMAIN }}
 
       - name: aws setting
         uses: aws-actions/configure-aws-credentials@v1
