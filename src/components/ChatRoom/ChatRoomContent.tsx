@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChatRoomData } from '@_types/type';
+import SockJS from 'sockjs-client';
 
 export default function ChatRoomContent({
   placeId,
@@ -20,7 +21,30 @@ export default function ChatRoomContent({
     }
 
     getChatRoomData();
-  }, [placeId]);
+  }, []);
+
+  useEffect(() => {
+    const sock = new SockJS(`http://172.233.70.162/chat/place/`, false, {
+      server: placeId,
+    });
+
+    sock.onopen = () => {
+      console.log('connected!');
+    };
+
+    sock.onmessage = (message) => {
+      console.log(`Received from server : ${message.data}`);
+    };
+
+    sock.onclose = () => {
+      console.log('connection closed');
+    };
+
+    // clear 함수로 정리해주지 않으면 개발 서버의 프로세스의 정상 종료 불가
+    return () => {
+      sock.close();
+    };
+  }, []);
 
   if (!chatRoomData) {
     return <div>Loading...</div>;
