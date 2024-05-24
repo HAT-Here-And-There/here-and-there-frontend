@@ -1,50 +1,92 @@
 import { useState, useEffect } from 'react';
 import { ChatRoomData } from '@_types/type';
 import SockJS from 'sockjs-client';
+import { Client, IStompSocket } from '@stomp/stompjs';
 
-export default function ChatRoomContent({
-  placeId,
-}: {
+interface ChatRoomContentProps {
   placeId: string | undefined;
-}) {
+}
+
+export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
   const [chatRoomData, setChatRoomData] = useState<ChatRoomData | null>(null);
+  const [newComment, setNewComment] = useState<string>('');
+  const [comments, setComments] = useState<string[]>([]);
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
     async function getChatRoomData() {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/places/${placeId}`
-      );
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/places/${placeId}`
+        );
 
-      const result = await response.json();
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
 
-      setChatRoomData(result);
+        const result = await response.json();
+        setChatRoomData(result);
+      } catch (error) {
+        console.error('Failed to fetch chat room data:', error);
+      }
     }
 
-    getChatRoomData();
-  }, []);
+    if (placeId) {
+      getChatRoomData();
+    }
+  }, [placeId]);
 
   useEffect(() => {
-    const sock = new SockJS(`http://172.233.70.162/chat/place/`, false, {
-      server: placeId,
-    });
+    if (!placeId) return;
 
-    sock.onopen = () => {
-      console.log('connected!');
+    const sock = new SockJS(`http://172.233.70.162/chat/place/`) as IStompSocket;
+    const client = new Client();
+
+    client.webSocketFactory = () => sock;
+
+    client.onConnect = () => {
+      console.log('Connected to WebSocket');
+      setIsConnected(true);
+      client.subscribe(`/topic/place/${placeId}`, (message) => {
+        const newComment = JSON.parse(message.body);
+        setComments((prevComments) => [...prevComments, newComment]);
+      });
     };
 
-    sock.onmessage = (message) => {
-      console.log(`Received from server : ${message.data}`);
+    client.onStompError = (frame) => {
+      console.error('Broker reported error: ' + frame.headers['message']);
+      console.error('Additional details: ' + frame.body);
     };
 
-    sock.onclose = () => {
-      console.log('connection closed');
-    };
+    client.activate();
+    setStompClient(client);
 
-    // clear 함수로 정리해주지 않으면 개발 서버의 프로세스의 정상 종료 불가
     return () => {
-      sock.close();
+      if (client) {
+        client.deactivate();
+        console.log('Disconnected from WebSocket');
+        setIsConnected(false);
+      }
     };
-  }, []);
+  }, [placeId]);
+
+  const handleCommentSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (stompClient && isConnected && newComment.trim()) {
+      const comment = {
+        placeId,
+        text: newComment,
+      };
+      stompClient.publish({
+        destination: `/app/place/${placeId}/comment`,
+        body: JSON.stringify(comment),
+      });
+      setNewComment('');
+    } else {
+      console.log('Connection not established or empty comment');
+    }
+  };
 
   if (!chatRoomData) {
     return <div>Loading...</div>;
@@ -66,38 +108,52 @@ export default function ChatRoomContent({
             <div className="w-[875px] h-[300px] flex-shrink-0 p-6">
               <h2 className="text-2xl font-bold mb-2">{chatRoomData.name}</h2>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">지역:</span>{' '}
-                {chatRoomData.areaName}
+                <span className="font-semibold">지역:</span> {chatRoomData.areaName}
               </p>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">주소:</span>{' '}
-                {chatRoomData.address}
+                <span className="font-semibold">주소:</span> {chatRoomData.address}
               </p>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">전화번호:</span>{' '}
-                {chatRoomData.contact}
+                <span className="font-semibold">전화번호:</span> {chatRoomData.contact}
               </p>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">운영 시간:</span>{' '}
-                {chatRoomData.openingHours} ~ {chatRoomData.closingHours}
+                <span className="font-semibold">운영 시간:</span> {chatRoomData.openingHours} ~ {chatRoomData.closingHours}
               </p>
             </div>
           </div>
         </div>
         {/* Right Section: Chat Room Card */}
         <div className="w-full lg:w-1/2 p-4">
-          <div className="flex flex-col items-center lg:items-start bg-gray-100 shadow-md rounded-lg overflow-hidden">
+          <div className="flex flex-col items-center lg:items-start bg-indigo-600 shadow-md rounded-lg overflow-hidden">
             <div className="w-full p-6">
-              <h2 className="text-2xl font-bold mb-2">채팅방 정보</h2>
-              {/* 채팅방 정보 및 기타 내용 */}
-              <p className="text-gray-700 mb-4">채팅방 내용</p>
-              {/* 예시 내용, 실제 데이터로 대체 필요 */}
-              <p className="text-gray-700 mb-4">
-                <span className="font-semibold">사용자 ID: 댓글</span>
-              </p>
-              <p className="text-gray-700 mb-4">
-                <span className="font-semibold">댓글달기...</span>
-              </p>
+              <h2 className="text-2xl font-bold mb-2">{chatRoomData.name}</h2>
+              <div className="text-gray-700 mb-4">
+                {comments.map((comment, index) => (
+                  <p key={index}>{comment}</p>
+                ))}
+              </div>
+              <form onSubmit={handleCommentSubmit} className="w-full mt-4">
+                <label htmlFor="comment" className="block text-gray-700 mb-2">
+                  댓글달기
+                </label>
+                <div className="flex items-center mb-2">
+                  <input
+                    id="comment"
+                    type="text"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    className="flex-grow p-2 border rounded-l-lg"
+                    placeholder="댓글을 입력하세요..."
+                    aria-label="댓글을 입력하세요"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-indigo-500 text-white p-2 rounded-r-lg"
+                  >
+                    전송
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
