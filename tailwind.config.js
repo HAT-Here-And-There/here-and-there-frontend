@@ -7,11 +7,12 @@ export default {
         custom: ['Gugi', 'sans-serif'],
       },
     },
-    colors: {
-      dftBackgroundGray: '#F4F5FF',
-      logoOrange: '#FAAC64',
-      logoBlue: '#93BCFA',
-    },
+    // colors: {
+    //   dftBackgroundGray: '#F4F5FF',
+    //   logoOrange: '#FAAC64',
+    //   logoBlue: '#93BCFA',
+    // },
   },
   plugins: [],
 };
+
