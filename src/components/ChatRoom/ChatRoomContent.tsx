@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChatRoomData } from '@_types/type';
 import SockJS from 'sockjs-client';
-import { Client, IStompSocket } from '@stomp/stompjs';
+import { chatProps } from '@_types/type';
 
 interface ChatRoomContentProps {
   placeId: string | undefined;
@@ -9,11 +9,12 @@ interface ChatRoomContentProps {
 
 export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
   const [chatRoomData, setChatRoomData] = useState<ChatRoomData | null>(null);
-  const [newComment, setNewComment] = useState<string>('');
-  const [comments, setComments] = useState<string[]>([]);
-  const [stompClient, setStompClient] = useState<Client | null>(null);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [newComment, setNewComment] = useState<string>(''); // 채팅창에 입력하는 텍스트를 의미하는 양방향 바인딩
+  const [frontSocket, setFrontSocket] = useState<WebSocket | null>(null); // socket 객체
+  const [comments, setComments] = useState<chatProps[]>([]); // 서버로부터 불러와서 보여지는 comment들
+  const [isConnected, setIsConnected] = useState<boolean>(false); // 연결된 상태
 
+  // 왼쪽의 div 영역에 대한 data를 fetching 하는 useEffect() 로직
   useEffect(() => {
     async function getChatRoomData() {
       try {
@@ -35,62 +36,55 @@ export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
     if (placeId) {
       getChatRoomData();
     }
-  }, [placeId]);
+  }, []);
 
   useEffect(() => {
     if (!placeId) return;
 
-    const sock = new SockJS(`http://172.233.70.162/chat/place/`) as IStompSocket;
-    const client = new Client();
+    const sock = new SockJS(`http://172.233.70.162/chat/place/`, false, {
+      server: placeId,
+    });
 
-    client.webSocketFactory = () => sock;
-
-    client.onConnect = () => {
-      console.log('Connected to WebSocket');
+    sock.onopen = async () => {
+      console.log('connection opened!');
+      setFrontSocket(sock);
       setIsConnected(true);
-      client.subscribe(`/topic/place/${placeId}`, (message) => {
-        const newComment = JSON.parse(message.body);
-        setComments((prevComments) => [...prevComments, newComment]);
-      });
     };
 
-    client.onStompError = (frame) => {
-      console.error('Broker reported error: ' + frame.headers['message']);
-      console.error('Additional details: ' + frame.body);
+    sock.onmessage = (message) => {
+      const parsedMessageData = JSON.parse(message.data);
+      console.log(parsedMessageData);
+      setComments((prev) => [...prev, parsedMessageData]);
     };
 
-    client.activate();
-    setStompClient(client);
+    sock.onclose = () => {
+      console.log('disconnected!');
+      setIsConnected(false);
+      setFrontSocket(null);
+    };
 
     return () => {
-      if (client) {
-        client.deactivate();
-        console.log('Disconnected from WebSocket');
-        setIsConnected(false);
-      }
+      sock.close();
     };
-  }, [placeId]);
+  }, []);
 
   const handleCommentSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (stompClient && isConnected && newComment.trim()) {
-      const comment = {
-        placeId,
-        text: newComment,
-      };
-      stompClient.publish({
-        destination: `/app/place/${placeId}/comment`,
-        body: JSON.stringify(comment),
-      });
-      setNewComment('');
-    } else {
-      console.log('Connection not established or empty comment');
-    }
+    const sendingMessage = {
+      userId: 1, // userId는 추후에 로그인된 사용자마다 가지는 사용자 id가 될 것임
+      content: newComment,
+      originChatId: 'test', // 해당 댓글이 참조하는 원본 댓글의 id임. 이는 depth가 1에 불과
+    };
+
+    frontSocket?.send(JSON.stringify(sendingMessage));
+    setNewComment('');
   };
 
   if (!chatRoomData) {
     return <div>Loading...</div>;
   }
+
+  console.log(comments);
 
   return (
     <div className="container mx-auto px-0 py-0">
@@ -108,16 +102,20 @@ export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
             <div className="w-[875px] h-[300px] flex-shrink-0 p-6">
               <h2 className="text-2xl font-bold mb-2">{chatRoomData.name}</h2>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">지역:</span> {chatRoomData.areaName}
+                <span className="font-semibold">지역:</span>{' '}
+                {chatRoomData.areaName}
               </p>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">주소:</span> {chatRoomData.address}
+                <span className="font-semibold">주소:</span>{' '}
+                {chatRoomData.address}
               </p>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">전화번호:</span> {chatRoomData.contact}
+                <span className="font-semibold">전화번호:</span>{' '}
+                {chatRoomData.contact}
               </p>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">운영 시간:</span> {chatRoomData.openingHours} ~ {chatRoomData.closingHours}
+                <span className="font-semibold">운영 시간:</span>{' '}
+                {chatRoomData.openingHours} ~ {chatRoomData.closingHours}
               </p>
             </div>
           </div>
@@ -128,8 +126,8 @@ export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
             <div className="w-full p-6">
               <h2 className="text-2xl font-bold mb-2">{chatRoomData.name}</h2>
               <div className="text-gray-700 mb-4">
-                {comments.map((comment, index) => (
-                  <p key={index}>{comment}</p>
+                {comments.map((comment) => (
+                  <p key={comment.id}>{comment.content}</p>
                 ))}
               </div>
               <form onSubmit={handleCommentSubmit} className="w-full mt-4">
