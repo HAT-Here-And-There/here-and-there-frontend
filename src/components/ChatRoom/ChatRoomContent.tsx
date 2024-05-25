@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChatRoomData } from '@_types/type';
 import SockJS from 'sockjs-client';
-import { Client, IStompSocket } from '@stomp/stompjs';
 
 interface ChatRoomContentProps {
   placeId: string | undefined;
@@ -11,7 +10,7 @@ export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
   const [chatRoomData, setChatRoomData] = useState<ChatRoomData | null>(null);
   const [newComment, setNewComment] = useState<string>('');
   const [comments, setComments] = useState<string[]>([]);
-  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [websocket, setWebsocket] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
@@ -40,48 +39,48 @@ export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
   useEffect(() => {
     if (!placeId) return;
 
-    const sock = new SockJS(`http://172.233.70.162/chat/place/`) as IStompSocket;
-    const client = new Client();
+    let sock: WebSocket | null = null;
 
-    client.webSocketFactory = () => sock;
+    const connectWebSocket = () => {
+      sock = new SockJS(`http://172.233.70.162/chat/place/`);
 
-    client.onConnect = () => {
-      console.log('Connected to WebSocket');
-      setIsConnected(true);
-      client.subscribe(`/topic/place/${placeId}`, (message) => {
-        const newComment = JSON.parse(message.body);
+      sock.onopen = () => {
+        console.log('Connected to WebSocket');
+        setIsConnected(true);
+        setWebsocket(sock);
+      };
+
+      sock.onmessage = (event) => {
+        const newComment = JSON.parse(event.data);
         setComments((prevComments) => [...prevComments, newComment]);
-      });
-    };
+      };
 
-    client.onStompError = (frame) => {
-      console.error('Broker reported error: ' + frame.headers['message']);
-      console.error('Additional details: ' + frame.body);
-    };
-
-    client.activate();
-    setStompClient(client);
-
-    return () => {
-      if (client) {
-        client.deactivate();
+      sock.onclose = () => {
         console.log('Disconnected from WebSocket');
         setIsConnected(false);
+        setWebsocket(null);
+        setTimeout(connectWebSocket, 100);
+      };
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (sock) {
+        sock.close();
       }
     };
   }, [placeId]);
 
   const handleCommentSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (stompClient && isConnected && newComment.trim()) {
+    if (websocket && isConnected && newComment.trim()) {
       const comment = {
         placeId,
         text: newComment,
       };
-      stompClient.publish({
-        destination: `/app/place/${placeId}/comment`,
-        body: JSON.stringify(comment),
-      });
+      websocket.send(JSON.stringify(comment));
+      setComments((prevComments) => [...prevComments, newComment]);
       setNewComment('');
     } else {
       console.log('Connection not established or empty comment');
@@ -102,10 +101,10 @@ export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
               <img
                 src={chatRoomData.imageUrl}
                 alt={chatRoomData.name}
-                className="w-full h-full object-cover"
+                className="w-[480px] h-full object-cover"
               />
             </div>
-            <div className="w-[875px] h-[300px] flex-shrink-0 p-6">
+            <div className="w-[480px] h-[300px] flex-shrink-0 p-6">
               <h2 className="text-2xl font-bold mb-2">{chatRoomData.name}</h2>
               <p className="text-gray-700 mb-4">
                 <span className="font-semibold">지역:</span> {chatRoomData.areaName}
@@ -124,37 +123,52 @@ export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
         </div>
         {/* Right Section: Chat Room Card */}
         <div className="w-full lg:w-1/2 p-4">
-          <div className="flex flex-col items-center lg:items-start bg-indigo-600 shadow-md rounded-lg overflow-hidden">
-            <div className="w-full p-6">
-              <h2 className="text-2xl font-bold mb-2">{chatRoomData.name}</h2>
-              <div className="text-gray-700 mb-4">
+          <div className="flex flex-col h-full lg:items-start bg-indigo-600 shadow-md rounded-lg overflow-hidden">
+            <div className="w-full p-6 bg-indigo-700 text-white">
+              <h2 className="text-2xl font-bold">{chatRoomData.name}</h2>
+            </div>
+            <div className="flex-grow overflow-y-auto p-6 text-gray-200">
+              <div
+                className="flex flex-col-reverse space-y-4 space-y-reverse"
+                style={{ maxHeight: 'calc(100vh - 300px)' }}
+              >
                 {comments.map((comment, index) => (
-                  <p key={index}>{comment}</p>
+                  <div
+                    key={index}
+                    className="w-96 ml-6 p-4 rounded-lg shadow-md flex items-start"
+                  >
+                    <img
+                      src="/assets/HAT.svg"
+                      alt="User avatar"
+                      className="w-10 h-10 mr-4"
+                    />
+                    <p>{comment}</p>
+                  </div>
                 ))}
               </div>
-              <form onSubmit={handleCommentSubmit} className="w-full mt-4">
-                <label htmlFor="comment" className="block text-gray-700 mb-2">
-                  댓글달기
-                </label>
-                <div className="flex items-center mb-2">
-                  <input
-                    id="comment"
-                    type="text"
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    className="flex-grow p-2 border rounded-l-lg"
-                    placeholder="댓글을 입력하세요..."
-                    aria-label="댓글을 입력하세요"
-                  />
-                  <button
-                    type="submit"
-                    className="bg-indigo-500 text-white p-2 rounded-r-lg"
-                  >
-                    전송
-                  </button>
-                </div>
-              </form>
             </div>
+            <form
+              onSubmit={handleCommentSubmit}
+              className="w-full p-6 bg-indigo-700"
+            >
+              <div className="flex items-center">
+                <input
+                  id="comment"
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  className="flex-grow p-2 border rounded-l-lg"
+                  placeholder="댓글을 입력하세요..."
+                  aria-label="댓글을 입력하세요"
+                />
+                <button
+                  type="submit"
+                  className="bg-indigo-500 text-white p-2 rounded-r-lg"
+                >
+                  전송
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </section>
