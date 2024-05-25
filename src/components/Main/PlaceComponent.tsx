@@ -5,7 +5,7 @@ export default function PlaceComponent({ places }: PlaceComponentProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gray-100">
+    <div className="bg-dftBackgroundGray">
       <div className="mx-auto max-w-2xl grid grid-cols-1 items-center gap-x-8 gap-y-16 px-4 py-24 sm:px-6 sm:py-32 lg:max-w-7xl lg:grid-cols-1 lg:px-8">
         <div>
           <h2 className="text-2xl font-custom text-center tracking-tight text-gray-900 sm:text-4xl">

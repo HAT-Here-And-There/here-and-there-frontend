@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChatRoomData } from '@_types/type';
 import SockJS from 'sockjs-client';
+import { chatProps } from '@_types/type';
 
 interface ChatRoomContentProps {
   placeId: string | undefined;
@@ -8,11 +9,12 @@ interface ChatRoomContentProps {
 
 export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
   const [chatRoomData, setChatRoomData] = useState<ChatRoomData | null>(null);
-  const [newComment, setNewComment] = useState<string>('');
-  const [comments, setComments] = useState<string[]>([]);
-  const [websocket, setWebsocket] = useState<WebSocket | null>(null);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [newComment, setNewComment] = useState<string>(''); // 채팅창에 입력하는 텍스트를 의미하는 양방향 바인딩
+  const [frontSocket, setFrontSocket] = useState<WebSocket | null>(null); // socket 객체
+  const [comments, setComments] = useState<chatProps[]>([]); // 서버로부터 불러와서 보여지는 comment들
+  const [isConnected, setIsConnected] = useState<boolean>(false); // 연결된 상태
 
+  // 왼쪽의 div 영역에 대한 data를 fetching 하는 useEffect() 로직
   useEffect(() => {
     async function getChatRoomData() {
       try {
@@ -34,62 +36,57 @@ export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
     if (placeId) {
       getChatRoomData();
     }
-  }, [placeId]);
+  }, []);
 
   useEffect(() => {
     if (!placeId) return;
 
-    let sock: WebSocket | null = null;
+    const sock = new SockJS(`http://172.233.70.162/chat/place/`, false, {
+      server: placeId,
+    });
 
-    const connectWebSocket = () => {
-      sock = new SockJS(`http://172.233.70.162/chat/place/`);
-
-      sock.onopen = () => {
-        console.log('Connected to WebSocket');
-        setIsConnected(true);
-        setWebsocket(sock);
-      };
-
-      sock.onmessage = (event) => {
-        const newComment = JSON.parse(event.data);
-        setComments((prevComments) => [...prevComments, newComment]);
-      };
-
-      sock.onclose = () => {
-        console.log('Disconnected from WebSocket');
-        setIsConnected(false);
-        setWebsocket(null);
-        setTimeout(connectWebSocket, 100);
-      };
+    sock.onopen = async () => {
+      console.log('connection opened!');
+      setFrontSocket(sock);
+      setIsConnected(true);
     };
 
-    connectWebSocket();
+    sock.onmessage = (message) => {
+      const parsedMessageData = JSON.parse(message.data);
+      console.log(parsedMessageData);
+      setComments((prev) => [...prev, parsedMessageData]);
+    };
+
+    sock.onclose = () => {
+      console.log('disconnected!');
+      setIsConnected(false);
+      setFrontSocket(null);
+    };
 
     return () => {
-      if (sock) {
-        sock.close();
-      }
+      sock.close();
     };
-  }, [placeId]);
+  }, []);
 
   const handleCommentSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (websocket && isConnected && newComment.trim()) {
-      const comment = {
-        placeId,
-        text: newComment,
-      };
-      websocket.send(JSON.stringify(comment));
-      setComments((prevComments) => [...prevComments, newComment]);
-      setNewComment('');
-    } else {
-      console.log('Connection not established or empty comment');
+    const sendingMessage = {
+      userId: 1, // userId는 추후에 로그인된 사용자마다 가지는 사용자 id가 될 것임
+      content: newComment,
+      originChatId: 'test', // 해당 댓글이 참조하는 원본 댓글의 id임. 이는 depth가 1에 불과
+    };
+
+    if (isConnected && frontSocket) {
+      frontSocket.send(JSON.stringify(sendingMessage));
     }
+    setNewComment('');
   };
 
   if (!chatRoomData) {
     return <div>Loading...</div>;
   }
+
+  console.log(comments);
 
   return (
     <div className="container mx-auto px-0 py-0">
@@ -107,43 +104,32 @@ export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
             <div className="w-[480px] h-[300px] flex-shrink-0 p-6">
               <h2 className="text-2xl font-bold mb-2">{chatRoomData.name}</h2>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">지역:</span> {chatRoomData.areaName}
+                <span className="font-semibold">지역:</span>{' '}
+                {chatRoomData.areaName}
               </p>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">주소:</span> {chatRoomData.address}
+                <span className="font-semibold">주소:</span>{' '}
+                {chatRoomData.address}
               </p>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">전화번호:</span> {chatRoomData.contact}
+                <span className="font-semibold">전화번호:</span>{' '}
+                {chatRoomData.contact}
               </p>
               <p className="text-gray-700 mb-4">
-                <span className="font-semibold">운영 시간:</span> {chatRoomData.openingHours} ~ {chatRoomData.closingHours}
+                <span className="font-semibold">운영 시간:</span>{' '}
+                {chatRoomData.openingHours} ~ {chatRoomData.closingHours}
               </p>
             </div>
           </div>
         </div>
         {/* Right Section: Chat Room Card */}
         <div className="w-full lg:w-1/2 p-4">
-          <div className="flex flex-col h-full lg:items-start bg-indigo-600 shadow-md rounded-lg overflow-hidden">
-            <div className="w-full p-6 bg-indigo-700 text-white">
-              <h2 className="text-2xl font-bold">{chatRoomData.name}</h2>
-            </div>
-            <div className="flex-grow overflow-y-auto p-6 text-gray-200">
-              <div
-                className="flex flex-col-reverse space-y-4 space-y-reverse"
-                style={{ maxHeight: 'calc(100vh - 300px)' }}
-              >
-                {comments.map((comment, index) => (
-                  <div
-                    key={index}
-                    className="w-96 ml-6 p-4 rounded-lg shadow-md flex items-start"
-                  >
-                    <img
-                      src="/assets/HAT.svg"
-                      alt="User avatar"
-                      className="w-10 h-10 mr-4"
-                    />
-                    <p>{comment}</p>
-                  </div>
+          <div className="flex flex-col items-center lg:items-start bg-indigo-600 shadow-md rounded-lg overflow-hidden">
+            <div className="w-full p-6">
+              <h2 className="text-2xl font-bold mb-2">{chatRoomData.name}</h2>
+              <div className="text-gray-700 mb-4">
+                {comments.map((comment) => (
+                  <p key={comment.id}>{comment.content}</p>
                 ))}
               </div>
             </div>

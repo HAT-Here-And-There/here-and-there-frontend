@@ -20,3 +20,11 @@ export interface ChatRoomData {
   sigunguName: string;
   address: string;
 }
+
+export interface chatProps {
+  id: string;
+  userId: number;
+  content: string;
+  originChatid?: string;
+  timeStamp: Date;
+}
