@@ -1,12 +1,15 @@
 import Logo from '@components/Main/Logo';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   return (
     <header className="bg-white-800 text-black p-2">
       <div className="container mx-auto flex items-center">
-        <div className="title">
-          <Logo />
-        </div>
+        <Link to="/">
+          <div className="title hover:cursor-pointer">
+            <Logo />
+          </div>
+        </Link>
         <nav>
           <ul className="flex space-x-12">
             <li>
