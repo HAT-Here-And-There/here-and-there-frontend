@@ -4,6 +4,19 @@
 
 @layer base {
   /* 스크롤 바 관련 UI를 제거하는 속성 원하는 요소에 scroll-box 클래스를 부여하면 됨 */
+
+  html,
+  body {
+    height: 100dvh;
+    margin: 0;
+  }
+
+  #root {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
   .scroll-box {
     overflow-x: hidden;
     -ms-overflow-style: none;

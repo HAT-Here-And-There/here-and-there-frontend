@@ -92,9 +92,10 @@ export default function NewChatRoomContent({ placeId }: ChatRoomContentProps) {
   return (
     <div className="container mx-1 my-1 px-0 py-0">
       <div className="w-full h-full flex items-center space-x-4">
-        <button 
-          onClick={() => navigate(-1)} 
-          className="bg-gray-200 text-gray-700 p-2 rounded">
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-gray-200 text-gray-700 p-2 rounded"
+        >
           뒤로 가기
         </button>
         <section className="flex flex-col lg:flex-row bg-white shadow-md rounded-lg overflow-hidden w-full">
@@ -111,16 +112,20 @@ export default function NewChatRoomContent({ placeId }: ChatRoomContentProps) {
               <div className="w-full h-[300px] flex-shrink-0 p-6">
                 <h2 className="text-2xl font-bold mb-2">{chatRoomData.name}</h2>
                 <p className="text-gray-700 mb-4">
-                  <span className="font-semibold">지역:</span> {chatRoomData.areaName}
+                  <span className="font-semibold">지역:</span>{' '}
+                  {chatRoomData.areaName}
                 </p>
                 <p className="text-gray-700 mb-4">
-                  <span className="font-semibold">주소:</span> {chatRoomData.address}
+                  <span className="font-semibold">주소:</span>{' '}
+                  {chatRoomData.address}
                 </p>
                 <p className="text-gray-700 mb-4">
-                  <span className="font-semibold">전화번호:</span> {chatRoomData.contact}
+                  <span className="font-semibold">전화번호:</span>{' '}
+                  {chatRoomData.contact}
                 </p>
                 <p className="text-gray-700 mb-4">
-                  <span className="font-semibold">운영 시간:</span> {chatRoomData.openingHours} ~ {chatRoomData.closingHours}
+                  <span className="font-semibold">운영 시간:</span>{' '}
+                  {chatRoomData.openingHours} ~ {chatRoomData.closingHours}
                 </p>
               </div>
             </div>
