@@ -76,7 +76,9 @@ export default function ChatRoomContent({ placeId }: ChatRoomContentProps) {
       originChatId: 'test', // 해당 댓글이 참조하는 원본 댓글의 id임. 이는 depth가 1에 불과
     };
 
-    frontSocket?.send(JSON.stringify(sendingMessage));
+    if (isConnected && frontSocket) {
+      frontSocket.send(JSON.stringify(sendingMessage));
+    }
     setNewComment('');
   };
 
