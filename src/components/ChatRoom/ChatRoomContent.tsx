@@ -40,7 +40,7 @@ export default function NewChatRoomContent({ placeId }: ChatRoomContentProps) {
   }
 
   return (
-    <div className="grow bg-dftBackgroundGray w-full flex justify-between items-center pr-6 pl-[20px] py-12">
+    <div className="grow bg-dftBackgroundGray w-full h-[1000px] flex justify-between items-start pr-6 pl-[20px] py-12">
       <div className="w-fit flex flex-col justify-start h-full">
         <div className="bg-white w-[70px] h-[70px] flex justify-center items-center rounded-md hover:cursor-pointer">
           <img

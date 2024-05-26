@@ -17,7 +17,7 @@ export default function PlaceCard({ chatRoomData }: PlaceCardProps) {
         </div>
       </div>
 
-      <div id="placeDescription" className="h-fit bg-white rounded-lg">
+      <div id="placeDescription" className="h-[300px] bg-white rounded-lg">
         <h2 className="text-2xl font-bold p-6 font-main">
           {chatRoomData.name}
         </h2>
