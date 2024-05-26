@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import SockJS from 'sockjs-client';
-import { chatProps } from '@_types/type';
+import { chatProps, commingMessageDataProp } from '@_types/type';
 import { ChatRoomData } from '@_types/type';
+import ChatReply from '@components/ChatRoom/ChatReply';
 
 interface ChatRoomCardProps {
   chatRoomData: ChatRoomData;
@@ -15,7 +16,13 @@ export default function ChatRoomCard({
   const [newComment, setNewComment] = useState<string>('');
   const [frontSocket, setFrontSocket] = useState<WebSocket | null>(null);
   const [comments, setComments] = useState<chatProps[]>([]);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [replyingId, setReplyingId] = useState<string | null>(null);
+  const commentInputRef = useRef<HTMLInputElement>(null);
+  const commentsRef = useRef<chatProps[]>(comments);
+
+  useEffect(() => {
+    commentsRef.current = comments;
+  }, [comments]);
 
   useEffect(() => {
     const sock = new SockJS(`http://172.233.70.162/chat/place/`, false, {
@@ -25,19 +32,51 @@ export default function ChatRoomCard({
     sock.onopen = async () => {
       console.log('connection opened!');
       setFrontSocket(sock);
-      setIsConnected(true);
     };
 
     sock.onmessage = (message) => {
-      console.log('hi');
-      const parsedMessageData = JSON.parse(message.data);
-      console.log(parsedMessageData);
-      setComments((prev) => [parsedMessageData, ...prev]);
+      const parsedMessageData: commingMessageDataProp = JSON.parse(
+        message.data
+      );
+      // 답글이 아닌 메시지인 경우도 있고, 답글인 메시지도 있음
+      // 답글인 경우 : 가장 위로 올려버리면 됨
+      const newData: chatProps = {
+        id: parsedMessageData.id,
+        userId: parsedMessageData.userId,
+        content: parsedMessageData.content,
+        timeStamp: parsedMessageData.timeStamp,
+        replies: [],
+      };
+
+      if (parsedMessageData.originChatId === null) {
+        setComments((prev) => {
+          const updatingComments = [newData, ...prev];
+          commentsRef.current = updatingComments;
+          return updatingComments;
+        });
+      } else {
+        setComments((prev) => {
+          const updatingComments = prev.map((element) => {
+            if (element.id === parsedMessageData.originChatId) {
+              return {
+                ...element,
+                replies: element.replies
+                  ? [...element.replies, newData]
+                  : [newData],
+              };
+            } else {
+              return element;
+            }
+          });
+
+          commentsRef.current = updatingComments;
+          return updatingComments;
+        });
+      }
     };
 
     sock.onclose = () => {
       console.log('disconnected!');
-      setIsConnected(false);
       setFrontSocket(null);
     };
 
@@ -64,19 +103,33 @@ export default function ChatRoomCard({
 
   const handleCommentSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    const sendingMessage = {
-      userId: 1,
-      content: newComment,
-      // originChatId: '6652f868bf7bec59262e42e9',
-    };
+    const sendingMessage =
+      replyingId === null
+        ? {
+            userId: 1,
+            content: newComment,
+            // originChatId: '6652f868bf7bec59262e42e9',
+          }
+        : {
+            userId: 1,
+            content: newComment,
+            originChatId: replyingId.toString(),
+          };
 
-    if (isConnected && frontSocket) {
+    if (frontSocket) {
       frontSocket.send(JSON.stringify(sendingMessage));
     }
     setNewComment('');
+    setReplyingId(null);
   };
 
-  console.log(comments);
+  // 답글 달기 이미지를 클릭하면 replyingId 상태가 그것으로 바뀌고 input으로 포커싱 됨
+  const handleReply = useCallback((num: string) => {
+    setReplyingId(num);
+    if (commentInputRef.current) {
+      commentInputRef.current.focus();
+    }
+  }, []);
 
   return (
     <div className="w-[42%] h-full">
@@ -91,19 +144,33 @@ export default function ChatRoomCard({
           id="message-content-box"
           className="grow pt-2 overflow-scroll scroll-box"
         >
-          {comments.map((comment, index) => (
-            <div
-              key={index}
-              className="w-full rounded-lg  flex items-start mb-4 bg-gray-100 text-black"
-            >
-              <img
-                src="/assets/HAT.svg"
-                alt="User avatar"
-                className="w-10 h-10 mr-4"
-              />
-              <div className="my-2 text-lg">{comment.content}</div>
-            </div>
-          ))}
+          {comments.map((comment) => {
+            return (
+              <>
+                <div
+                  key={comment.id}
+                  className="w-full rounded-lg  flex items-start mb-4 bg-gray-100 text-black"
+                >
+                  <img
+                    src="/assets/HAT.svg"
+                    alt="User avatar"
+                    className="w-10 h-10 mr-4"
+                  />
+                  <div className="my-2 text-lg">{comment.content}</div>
+                  <div className="ml-2" onClick={() => handleReply(comment.id)}>
+                    <img
+                      src="/assets/Reply.svg"
+                      alt="Reply"
+                      className="w-8 h-8 hover:cursor-pointer"
+                    />
+                  </div>
+                </div>
+                {comment.replies.map((reply) => {
+                  return <ChatReply reply={reply} key={reply.id} />;
+                })}
+              </>
+            );
+          })}
         </div>
         <form
           onSubmit={handleCommentSubmit}
@@ -120,6 +187,7 @@ export default function ChatRoomCard({
               aria-label="댓글을 입력하세요"
               autoComplete="off"
               className="grow rounded-sm p-2"
+              ref={commentInputRef}
             />
             <button type="submit" className="h-full">
               전송
