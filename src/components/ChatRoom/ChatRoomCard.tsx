@@ -29,6 +29,7 @@ export default function ChatRoomCard({
     };
 
     sock.onmessage = (message) => {
+      console.log('hi');
       const parsedMessageData = JSON.parse(message.data);
       console.log(parsedMessageData);
       setComments((prev) => [parsedMessageData, ...prev]);
@@ -55,7 +56,7 @@ export default function ChatRoomCard({
 
       const data = await response.json();
 
-      console.log(data);
+      setComments(data);
     }
 
     getChattingHistory();
@@ -66,7 +67,7 @@ export default function ChatRoomCard({
     const sendingMessage = {
       userId: 1,
       content: newComment,
-      originChatId: '6652f868bf7bec59262e42e9',
+      // originChatId: '6652f868bf7bec59262e42e9',
     };
 
     if (isConnected && frontSocket) {
