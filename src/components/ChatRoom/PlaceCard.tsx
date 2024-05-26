@@ -6,13 +6,13 @@ interface PlaceCardProps {
 
 export default function PlaceCard({ chatRoomData }: PlaceCardProps) {
   return (
-    <div className="w-[42%] flex flex-col justify-between gap-y-2">
+    <div className="w-[50%] flex flex-col justify-between gap-y-2">
       <div id="placeImage" className="h-[560px] overflow-hidden">
         <div className="w-full h-full">
           <img
             src={chatRoomData.imageUrl}
             alt={chatRoomData.name}
-            className="w-full h-full object-cover rounded-lg"
+            className="h-full object-cover rounded-lg"
           />
         </div>
       </div>

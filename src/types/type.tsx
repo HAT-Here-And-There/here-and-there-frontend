@@ -25,6 +25,7 @@ export interface chatProps {
   id: string;
   userId: number;
   content: string;
-  originChatid?: string;
+  originChatId?: string;
   timeStamp: Date;
+  replies?: chatProps[];
 }
