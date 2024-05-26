@@ -8,15 +8,16 @@ interface ChatRoomCardProps {
   placeId: string | undefined;
 }
 
-export default function ChatRoomCard({ chatRoomData, placeId }: ChatRoomCardProps) {
+export default function ChatRoomCard({
+  chatRoomData,
+  placeId,
+}: ChatRoomCardProps) {
   const [newComment, setNewComment] = useState<string>('');
   const [frontSocket, setFrontSocket] = useState<WebSocket | null>(null);
   const [comments, setComments] = useState<chatProps[]>([]);
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!placeId) return;
-
     const sock = new SockJS(`http://172.233.70.162/chat/place/`, false, {
       server: placeId,
     });
@@ -42,7 +43,7 @@ export default function ChatRoomCard({ chatRoomData, placeId }: ChatRoomCardProp
     return () => {
       sock.close();
     };
-  }, [placeId]);
+  }, []);
 
   const handleCommentSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -58,35 +59,42 @@ export default function ChatRoomCard({ chatRoomData, placeId }: ChatRoomCardProp
     setNewComment('');
   };
 
+  console.log(comments);
+
   return (
-    <div className="w-full lg:w-1/2 p-4">
-      <div className="flex flex-col h-full bg-chatRoomPurple shadow-md rounded-lg overflow-hidden">
-        <div className="w-full p-8 bg-indigo-600 text-white">
+    <div className="w-[42%] h-full">
+      <div className="flex flex-col h-full bg-chatRoomPurple rounded-lg overflow-scroll scroll-box">
+        <div
+          className="w-full h-[10%] bg-indigo-600 text-white flex justify-start items-center pl-4"
+          id="chat-input-header"
+        >
           <h2 className="text-2xl font-bold font-main">{chatRoomData.name}</h2>
         </div>
-        <div className="flex-grow overflow-y-auto p-6 text-gray-200">
-          <div className="flex flex-col space-y-4" style={{ maxHeight: 'calc(100vh - 300px)' }}>
-            {comments.map((comment, index) => (
-              <div key={index} className="w-full p-4 rounded-lg shadow-md flex items-start mb-2 bg-gray-100 text-black">
-                <img src="/assets/HAT.svg" alt="User avatar" className="w-10 h-10 mr-4" />
-                <div className="my-2 text-lg">{comment.content}</div>
-              </div>
-            ))}
-          </div>
+        <div id="message-content-box" className="grow">
+          {comments.map((comment, index) => (
+            <div key={index}>
+              <img src="/assets/HAT.svg" alt="User avatar" className="" />
+              <div>{comment.content}</div>
+            </div>
+          ))}
         </div>
-        <form onSubmit={handleCommentSubmit} className="w-full p-6 bg-indigo-600">
-          <div className="flex items-center relative">
+        <form
+          onSubmit={handleCommentSubmit}
+          id="message-input-area"
+          className="h-[10%] bg-indigo-600 flex items-center px-[5%]"
+        >
+          <div className="w-full flex justify-between gap-x-2 items-center">
             <input
               id="comment"
               type="text"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              className="flex-grow p-2 border rounded-lg"
               placeholder="댓글을 입력하세요..."
               aria-label="댓글을 입력하세요"
               autoComplete="off"
+              className="grow rounded-sm p-2"
             />
-            <button type="submit" className="absolute right-0 bg-indigo-600 text-white text-lg p-4 rounded-r-lg">
+            <button type="submit" className="h-full">
               전송
             </button>
           </div>

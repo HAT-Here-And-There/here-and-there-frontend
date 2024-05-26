@@ -33,24 +33,27 @@ export default function NewChatRoomContent({ placeId }: ChatRoomContentProps) {
     if (placeId) {
       getChatRoomData();
     }
-  }, [placeId]);
+  }, []);
 
   if (!chatRoomData) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="bg-dftBackgroundGray w-[1920px] h-[1000px] flex items-center">
-      <button
-        onClick={() => navigate(-1)}
-        className="bg-white text-gray-700 p-2 rounded mt-[-850px]"
-      >
-        <img src="/assets/Arrow.svg" alt="뒤로 가기" className="w-10 h-10" />
-      </button>
-      <section className="flex bg-white shadow-md rounded-lg overflow-hidden w-full h-[940px] mr-6">
-        <PlaceCard chatRoomData={chatRoomData} />
-        <ChatRoomCard chatRoomData={chatRoomData} placeId={placeId} />
-      </section>
+    <div className="grow bg-dftBackgroundGray w-full flex justify-between items-center pr-6 pl-[20px] py-12">
+      <div className="w-fit flex flex-col justify-start h-full">
+        <div className="bg-white w-[70px] h-[70px] flex justify-center items-center rounded-md hover:cursor-pointer">
+          <img
+            src="/assets/Arrow.svg"
+            alt="뒤로 가기"
+            className="w-10 h-10"
+            onClick={() => navigate(-1)}
+          />
+        </div>
+      </div>
+
+      <PlaceCard chatRoomData={chatRoomData} />
+      <ChatRoomCard chatRoomData={chatRoomData} placeId={placeId} />
     </div>
   );
 }
