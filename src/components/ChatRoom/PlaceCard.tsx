@@ -17,8 +17,26 @@ export default function PlaceCard({ chatRoomData }: PlaceCardProps) {
         </div>
       </div>
 
-      <div id="placeDescription" className="h-[150px] bg-white rounded-lg">
-        good
+      <div id="placeDescription" className="h-fit bg-white rounded-lg">
+        <h2 className="text-2xl font-bold p-6 font-main">
+          {chatRoomData.name}
+        </h2>
+        <div className="p-6">
+          <p className="text-gray-700 mb-4">
+            <span className="font-custom">지역:</span> {chatRoomData.areaName}
+          </p>
+          <p className="text-gray-700 mb-4">
+            <span className="font-custom">주소:</span> {chatRoomData.address}
+          </p>
+          <p className="text-gray-700 mb-4">
+            <span className="font-custom">전화번호:</span>{' '}
+            {chatRoomData.contact}
+          </p>
+          <p className="text-gray-700 mb-4">
+            <span className="font-custom">운영 시간:</span>{' '}
+            {chatRoomData.openingHours} ~ {chatRoomData.closingHours}
+          </p>
+        </div>
       </div>
     </div>
   );
