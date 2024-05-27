@@ -9,6 +9,17 @@ export interface PlaceComponentProps {
   places: Place[];
 }
 
+export interface Region {
+  id: number;
+  name: string;
+  imageUrl: string;
+  areaName: string;
+}
+
+export interface RegionComponentProps {
+  regions: Region[];
+}
+
 export interface ChatRoomData {
   id: number;
   name: string;
@@ -36,3 +47,5 @@ export interface chatProps {
   timeStamp: Date;
   replies: chatProps[] | [];
 }
+
+
