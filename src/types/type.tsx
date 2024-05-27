@@ -21,10 +21,18 @@ export interface ChatRoomData {
   address: string;
 }
 
+export interface commingMessageDataProp {
+  id: string;
+  userId: number;
+  content: string;
+  timeStamp: Date;
+  originChatId?: string;
+}
+
 export interface chatProps {
   id: string;
   userId: number;
   content: string;
-  originChatid?: string;
   timeStamp: Date;
+  replies: chatProps[] | [];
 }
