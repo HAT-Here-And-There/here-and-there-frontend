@@ -132,53 +132,51 @@ export default function ChatRoomCard({
   }, []);
 
   return (
-    <div className="w-[42%] h-full">
+    <div className="w-[45%] h-full">
       <div className="flex flex-col h-full bg-chatRoomPurple rounded-lg overflow-scroll scroll-box">
         <div
-          className="w-full h-[10%] min-h-[10%] bg-indigo-600 text-white flex justify-start items-center pl-4"
+          className="w-full h-[10%] bg-indigo-600 text-white flex justify-start items-center pl-8"
           id="chat-input-header"
         >
           <h2 className="text-2xl font-bold font-main">{chatRoomData.name}</h2>
         </div>
-        <div
-          id="message-content-box"
-          className="grow pt-2 overflow-scroll scroll-box"
-        >
-          {comments.map((comment) => {
-            return (
-              <>
-                <div
-                  key={comment.id}
-                  className="w-full rounded-lg  flex items-start mb-4 bg-gray-100 text-black"
+        <div id="message-content-box" className="grow p-4">
+          {comments.map((comment) => (
+            <div key={comment.id}>
+              <div className="flex items-center mb-2">
+                <img
+                  src="/assets/HAT.svg"
+                  alt="User avatar"
+                  className="w-10 h-10 mr-2"
+                />
+                <div className="flex-grow bg-gray-100 p-2 rounded-lg">
+                  {comment.content}
+                </div>
+                <button
+                  className="ml-2"
+                  onClick={() => handleReply(comment.id)}
                 >
                   <img
-                    src="/assets/HAT.svg"
-                    alt="User avatar"
-                    className="w-10 h-10 mr-4"
+                    src="/assets/Reply.svg"
+                    alt="Reply"
+                    className="w-8 h-8 hover:cursor-pointer"
                   />
-                  <div className="my-2 text-lg">{comment.content}</div>
-                  <div className="ml-2" onClick={() => handleReply(comment.id)}>
-                    <img
-                      src="/assets/Reply.svg"
-                      alt="Reply"
-                      className="w-8 h-8 hover:cursor-pointer"
-                    />
-                  </div>
-                </div>
-                {comment.replies.map((reply) => {
-                  return <ChatReply reply={reply} key={reply.id} />;
-                })}
-              </>
-            );
-          })}
+                </button>
+              </div>
+              {comment.replies.map((reply) => {
+                return <ChatReply reply={reply} key={reply.id} />;
+              })}
+            </div>
+          ))}
         </div>
         <form
           onSubmit={handleCommentSubmit}
           id="message-input-area"
-          className="h-[10%] min-h-[10%] bg-indigo-600 flex items-center px-[5%]"
+          className="h-[10%] bg-indigo-600 flex items-center px-[5%]"
         >
           <div className="w-full flex justify-between gap-x-2 items-center">
             <input
+              ref={commentInputRef} // Ref 추가
               id="comment"
               type="text"
               value={newComment}
@@ -187,7 +185,6 @@ export default function ChatRoomCard({
               aria-label="댓글을 입력하세요"
               autoComplete="off"
               className="grow rounded-sm p-2"
-              ref={commentInputRef}
             />
             <button type="submit" className="h-full">
               전송

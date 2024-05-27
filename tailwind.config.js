@@ -13,6 +13,7 @@ export default {
         logoBlue: '#93BCFA',
         textRed: '#FF8577',
         textGray: '#BBB8B8',
+        textPurple: '#5551FF',
         chatRoomPurple: 'rgba(85, 81, 255, 0.90)',
       },
     },
