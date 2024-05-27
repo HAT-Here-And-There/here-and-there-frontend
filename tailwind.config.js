@@ -5,7 +5,7 @@ export default {
     extend: {
       fontFamily: {
         main: ['Gugi', 'sans-serif'],
-        text: ["Nanum Gothic", 'sans-serif'],
+        text: ['Nanum Gothic', 'sans-serif'],
       },
       colors: {
         dftBackgroundGray: '#F4F5FF',
@@ -18,5 +18,4 @@ export default {
       },
     },
   },
-  plugins: [],
 };
