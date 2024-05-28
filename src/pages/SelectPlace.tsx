@@ -1,3 +1,11 @@
+import Header from '@components/all/Header';
+import PlaceList from '@components/SelectPlace/PlaceList';
+
 export default function SelectPlacePage() {
-  return <div>This is select page</div>;
+  return (
+    <>
+      <Header />
+      <PlaceList />
+    </>
+  );
 }
