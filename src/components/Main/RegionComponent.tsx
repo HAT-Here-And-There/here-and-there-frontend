@@ -9,8 +9,8 @@ export default function RegionComponent({ regions }: RegionComponentProps) {
   }
 
   return (
-    <div className="grow flex flex-col px-60 py-28 justify-center bg-white">
-      <div className="grid grid-cols-2 gap-6">
+    <div className="grow flex flex-col px-60 py-24 justify-center bg-white">
+      <div className="grid grid-cols-2 gap-10">
         {regions.map((region) => (
           <div
             key={region.id}

@@ -13,20 +13,20 @@ export default function Header() {
         <nav className="grow flex justify-between items-center">
           <a
             href="/select-place"
-            className="hover:underline font-custom font-color"
+            className="hover:underline font-main text-lg font-color"
           >
             장소목록
           </a>
 
-          <a href="/travel-plans-list" className="hover:underline font-custom">
+          <a href="/travel-plans-list" className="hover:underline font-main text-lg">
             여행계획
           </a>
 
-          <a href="#" className="hover:underline font-custom">
+          <a href="#" className="hover:underline font-main text-lg">
             마이페이지
           </a>
 
-          <a href="/login" className="hover:underline font-custom">
+          <a href="/login" className="hover:underline font-main text-lg">
             로그인
           </a>
         </nav>

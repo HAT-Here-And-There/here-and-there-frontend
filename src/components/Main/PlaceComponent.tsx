@@ -5,7 +5,7 @@ export default function PlaceComponent({ places }: PlaceComponentProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="grow flex flex-col px-80 py-20 bg-dftBackgroundGray">
+    <div className="grow flex flex-col px-80 py-16 bg-dftBackgroundGray">
       <div>
         <h2 className="text-3xl font-main text-center tracking-tight text-gray-900">
           여기저기 여행을 시작해보세요!
@@ -25,7 +25,7 @@ export default function PlaceComponent({ places }: PlaceComponentProps) {
             <img
               src={place.imageUrl}
               alt={place.name}
-              className="absolute top-0 left-0 w-full h-full object-cover"
+              className="absolute top-0 left-0 w-full h-5/6 object-cover"
             />
             <div className="absolute bottom-0 left-0 w-full bg-gray-800 text-white text-center py-2">
               Top. {index + 1}
