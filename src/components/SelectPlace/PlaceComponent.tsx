@@ -7,7 +7,7 @@ export default function PlaceComponent({ places }: PlaceComponentProps) {
 
   useEffect(() => {
     console.log(places);
-  }, [places]);
+  }, []);
 
   const handleSave = (placeId: number) => {
     // 북마크 버튼 클릭 시 장소 저장할 로직을 추가하기
