@@ -48,4 +48,7 @@ export interface chatProps {
   replies: chatProps[] | [];
 }
 
-
+export interface selectPlaceProps {
+  selectedRegion: null | string;
+  selectedCity: null | string;
+}
