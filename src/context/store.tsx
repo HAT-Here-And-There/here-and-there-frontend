@@ -1,7 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
+import selectPlaceReducer from '@context/slices/select-place-slice';
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    selectPlace: selectPlaceReducer,
+  },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

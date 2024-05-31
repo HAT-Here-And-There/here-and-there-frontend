@@ -1,9 +1,21 @@
 import { PlaceComponentProps } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+// import { changeRegion, changeCity } from '@context/slices/select-place-slice'; 해당 action creator는 추후에 사용
+import { RootState } from '@context/store';
 
 export default function PlaceComponent({ places }: PlaceComponentProps) {
   const navigate = useNavigate();
+  const selectedRegion = useSelector(
+    (state: RootState) => state.selectPlace.selectedRegion
+  );
+
+  const selectedCity = useSelector(
+    (state: RootState) => state.selectPlace.selectedCity
+  );
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     console.log(places);
