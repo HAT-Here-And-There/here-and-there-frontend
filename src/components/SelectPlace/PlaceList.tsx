@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Place } from '@_types/type';
-import PlaceComponent from '@components/SelectPlace/PlaceComponent';
+import SelectPlaceComponent from '@components/SelectPlace/SelectPlaceComponent';
 
 export default function PlaceList() {
   const [selectPlace, setSelectPlace] = useState<Place[]>([]);
@@ -17,5 +17,5 @@ export default function PlaceList() {
     getData();
   }, []);
 
-  return <PlaceComponent places={selectPlace} />;
+  return <SelectPlaceComponent places={selectPlace} />;
 }

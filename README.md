@@ -20,7 +20,7 @@
 2. `GET /tour/places/{id}` : 특정 장소의 상세 페이지에 들어갔을 때 해당 장소의 이미지, 전화번호, 운영 시각들을 알 수 있음
 3. websocket `/chat/place/{placeid}` : 특정 장소의 상세 페이지를 위한 websocket 연결
 4. `GET /chat/chats?placeId=${placeId}&pageSize=30` : 처음 채팅방에 입장했을 때 30개의 chat history를 불러오기 위한 설정
-5. `GET /place/main-area` :
+5. `GET /place/main-area` : 
 6. `GET /tour/places (고도화)` : main-area 만 쿼리 스트링으로 넘기면 권역만 설정된 top 장소 반환, area와 sigungu 쿼리 스트링을 넘기면 권역과 도시가 설정된 top 장소 반환
 
 ## 이슈 생성 사항

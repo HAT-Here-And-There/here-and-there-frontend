@@ -12,7 +12,7 @@ const selectPlaceSlice = createSlice({
   initialState: initialSelectPlaceState,
   reducers: {
     changeRegion: (state, action: PayloadAction<string>) => {
-      state.selectedRegion = action.payload; // 해당 action creator를 끌어다 쓸 때에는 인자가 바로 문자열이면 됨ㄴ
+      state.selectedRegion = action.payload; // 해당 action creator를 끌어다 쓸 때에는 인자가 바로 문자열이면 됨
     },
 
     changeCity: (state, action: PayloadAction<string>) => {
