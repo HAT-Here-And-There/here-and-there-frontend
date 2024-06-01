@@ -17,8 +17,8 @@ export default function PlaceComponent({ places }: PlaceComponentProps) {
       </div>
       <div className="grid grid-cols-4 gap-4">
         {places.map((place, index) => (
-          <div 
-            key={place.id} 
+          <div
+            key={place.id}
             className="relative pb-[100%] overflow-hidden rounded-lg bg-gray-100 hover:cursor-pointer"
             onClick={() => navigate(`/chatroom/${place.id}`)}
           >
