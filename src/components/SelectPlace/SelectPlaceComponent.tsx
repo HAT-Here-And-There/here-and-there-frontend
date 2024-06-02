@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // import { changeRegion, changeCity } from '@context/slices/select-place-slice'; 해당 action creator는 추후에 사용
 import { RootState } from '@context/store';
 
-export default function PlaceComponent({ places }: PlaceComponentProps) {
+export default function SelectPlaceComponent({ places }: PlaceComponentProps) {
   const navigate = useNavigate();
   const selectedRegion = useSelector(
     (state: RootState) => state.selectPlace.selectedRegion
@@ -27,8 +27,8 @@ export default function PlaceComponent({ places }: PlaceComponentProps) {
   };
 
   return (
-    <div className="w-full h-full bg-dftBackgroundGray flex justify-center">
-      <div className="w-[1350px] h-auto py-9 rounded-lg overflow-scroll scroll-box">
+    <div className="bg-dftBackgroundGray flex justify-center">
+      <div className="w-[1350px] py-9 rounded-lg overflow-scroll scroll-box">
         {places.map((place) => (
           <div
             key={place.id}

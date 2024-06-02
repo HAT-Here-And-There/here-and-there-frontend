@@ -23,8 +23,8 @@ export default function RegionComponent({ regions }: RegionComponentProps) {
               onClick={() => navigate(`/select-place/${region.id}`)}
             />
             <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-75 text-black p-4 rounded-b-lg">
-              <p className="font-main text-lg font-bold">{region.areaName}</p>
-              <p className="font-custom text-textPurple text-sm">#해당 지역 인기 장소1 #해당 지역 인기 장소2 #해당 지역 인기 장소3</p>
+              <p className="font-main text-xl mb-2 font-bold">{region.areaName}</p>
+              <p className="font-custom text-textPurple text-sm">#해당 지역 인기 장소1  #해당 지역 인기 장소2  #해당 지역 인기 장소3</p>
             </div>
           </div>
         ))}
