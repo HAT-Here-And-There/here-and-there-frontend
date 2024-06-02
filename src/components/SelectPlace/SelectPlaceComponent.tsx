@@ -28,11 +28,11 @@ export default function SelectPlaceComponent({ places }: PlaceComponentProps) {
 
   return (
     <div className="bg-dftBackgroundGray flex justify-center">
-      <div className="w-[1350px] py-9 rounded-lg overflow-scroll scroll-box">
+      <div className="w-full flex flex-col items-center pt-9 rounded-lg overflow-scroll scroll-box">
         {places.map((place) => (
           <div
             key={place.id}
-            className="flex items-center w-full h-[150px] mb-4 py-3.5 pl-10 pr-5 rounded-lg bg-white hover:cursor-pointer"
+            className="flex items-center w-[90%] h-[150px] mb-4 py-3.5 pl-10 pr-5 rounded-lg bg-white hover:cursor-pointer"
             onClick={() => navigate(`/chatroom/${place.id}`)}
           >
             <img

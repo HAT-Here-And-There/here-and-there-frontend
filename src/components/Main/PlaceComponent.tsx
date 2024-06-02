@@ -5,8 +5,8 @@ export default function PlaceComponent({ places }: PlaceComponentProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="grow flex flex-col px-80 py-16 bg-dftBackgroundGray">
-      <div>
+    <div className="flex flex-col items-center w-full h-[1000px] pt-16 pb-32  bg-dftBackgroundGray">
+      <div className="mb-[73px]">
         <h2 className="text-3xl font-main text-center tracking-tight text-gray-900">
           여기저기 여행을 시작해보세요!
         </h2>
@@ -15,11 +15,11 @@ export default function PlaceComponent({ places }: PlaceComponentProps) {
           <span className="text-red-300">인기 많은 여행지</span>는 어디일까요?
         </p>
       </div>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4 w-[46%] h-[58%]">
         {places.map((place, index) => (
           <div
             key={place.id}
-            className="relative pb-[100%] overflow-hidden rounded-lg bg-gray-100 hover:cursor-pointer"
+            className="relative pb-[100%] w-[130px] h-[40px] overflow-hidden rounded-lg bg-gray-100 hover:cursor-pointer"
             onClick={() => navigate(`/chatroom/${place.id}`)}
           >
             <img
