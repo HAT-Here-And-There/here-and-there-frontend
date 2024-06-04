@@ -9,17 +9,17 @@ export default function RegionComponent({ regions }: RegionComponentProps) {
   }
 
   return (
-    <div className="grow flex flex-col justify-center items-center pt-[100px] pb-[70px] bg-white">
-      <div className="grid grid-cols-2 gap-10">
+    <div className="flex flex-col justify-center items-center py-24 bg-white">
+      <div className="grid grid-cols-2 gap-10 ">
         {regions.map((region) => (
-          <div key={region.id} className="relative w-[350px] h-[175px]">
+          <div key={region.id} className="relative w-[560px] h-[350px]">
             <img
               src={region.imageUrl}
               alt={region.name}
-              className="rounded-lg bg-gray-100 hover:cursor-pointer object-cover"
+              className="rounded-lg hover:cursor-pointer object-cover w-full h-3/4"
               onClick={() => navigate(`/select-place/${region.id}`)}
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-75 text-black p-4 rounded-b-lg">
+            <div className="absolute bottom-0 left-0 right-0 bg-gray-100 bg-opacity-75 text-black p-4 rounded-b-lg">
               <p className="font-main text-xl mb-2 font-bold">
                 {region.areaName}
               </p>
