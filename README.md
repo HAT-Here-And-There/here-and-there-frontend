@@ -20,8 +20,13 @@
 2. `GET /tour/places/{id}` : 특정 장소의 상세 페이지에 들어갔을 때 해당 장소의 이미지, 전화번호, 운영 시각들을 알 수 있음
 3. websocket `/chat/place/{placeid}` : 특정 장소의 상세 페이지를 위한 websocket 연결
 4. `GET /chat/chats?placeId=${placeId}&pageSize=30` : 처음 채팅방에 입장했을 때 30개의 chat history를 불러오기 위한 설정
-5. `GET /place/main-area` : 
-6. `GET /tour/places (고도화)` : main-area 만 쿼리 스트링으로 넘기면 권역만 설정된 top 장소 반환, area와 sigungu 쿼리 스트링을 넘기면 권역과 도시가 설정된 top 장소 반환
+5. `GET /place/major-region` : 따로 parameter가 없으며, 각 권역에 해당하는 시군구에 대한 정보를 확인할 수 있음, main 페이지의 8 권역 UI 를 보여준다. 해당 API를 통해 8권역에 대한 시군구의 정보를 알 수 있다. 이는 시군구의 요소마다의 id와 areaId 필드로 나뉜다. 여기에서 그냥 plain한 id가 추후에 쓰일 `sigunguIds`를 의미하고, `areaId`는 별개이다. 주의할 점은 areaId는 권역의 1 ~ 8과는 관련 없다.
+6. `GET /tour/places (고도화)` : main-area 만 쿼리 스트링으로 넘기면 권역만 설정된 top 장소 반환(**상세 목록 페이지에서 권역만 설정 됐을 때 활용**), area와 sigungu 쿼리 스트링을 넘기면 권역과 도시가 설정된 top 장소 반환(쉽게 말해 특정 시군구까지 선택했을 때에 활용됨)
+
+## 상세 페이지에서의 동작 설계
+
+1. main 페이지를 통해 상세 페이지로 들어가기 : 8권역 중 하나를 눌러서 들어감 => `/tour/places?majorRegionId={majorRegionId}` api를 통해서 접근. 이땐 majorRegionId는 1 ~ 8에 해당함
+2. 헤더의 "장소 목록"을 클릭하여 상세 페이지로 들어감 : 권역이 설정되지 않은 상태임. 전체 장소 중 top 20개를 보여줘야 함(`/tour/places?size=20`), 권역만 클릭하면 위의 majorRegionId를 이용한 api로 받아와야 함
 
 ## 이슈 생성 사항
 

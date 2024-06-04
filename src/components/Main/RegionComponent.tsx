@@ -17,12 +17,10 @@ export default function RegionComponent({ regions }: RegionComponentProps) {
               src={region.imageUrl}
               alt={region.name}
               className="rounded-lg hover:cursor-pointer object-cover w-full h-3/4"
-              onClick={() => navigate(`/select-place/${region.id}`)}
+              onClick={() => navigate(`/select-place`)} // 해당 핸들러 함수에서 전역으로 선택된 권역 상태를 바꿔줘야 한다
             />
             <div className="absolute bottom-0 left-0 right-0 bg-gray-100 bg-opacity-75 text-black p-4 rounded-b-lg">
-              <p className="font-main text-xl mb-2 font-bold">
-                {region.areaName}
-              </p>
+              <p className="font-main text-xl mb-2 font-bold">{region.name}</p>
               <p className="font-custom text-textPurple text-sm">
                 #해당 지역 인기 장소1 #해당 지역 인기 장소2 #해당 지역 인기
                 장소3

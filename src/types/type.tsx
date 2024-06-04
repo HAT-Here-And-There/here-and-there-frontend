@@ -13,7 +13,6 @@ export interface Region {
   id: number;
   name: string;
   imageUrl: string;
-  areaName: string;
 }
 
 export interface RegionComponentProps {
