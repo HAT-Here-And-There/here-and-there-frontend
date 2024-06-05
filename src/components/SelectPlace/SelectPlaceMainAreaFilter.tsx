@@ -1,4 +1,8 @@
-export default function RegionFilter() {
+import { useAppDispatch } from '@context/store';
+import { changeMainArea } from '@context/slices/select-place-slice';
+
+export default function SelectPlaceMainAreaFilter() {
+  const dispatch = useAppDispatch();
   const regions = [
     '서울',
     '경기',
@@ -12,10 +16,11 @@ export default function RegionFilter() {
 
   return (
     <div className="flex text-gray-400 items-center justify-evenly bg-white-800 h-[85px] min-h-[85px] border-t border-b border-slate-200">
-      {regions.map((region) => (
+      {regions.map((region, index) => (
         <div
           key={region}
           className="hover:cursor-pointer hover:text-black active:text-black font-main text-lg font-color"
+          onClick={() => dispatch(changeMainArea(index + 1))}
         >
           {region}
         </div>

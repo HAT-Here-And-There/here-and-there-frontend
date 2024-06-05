@@ -1,8 +1,14 @@
-import { RegionComponentProps } from '@_types/type';
+import { MainEightRegionComponentProps } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
+// import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '@context/store';
+import { changeMainArea } from '@context/slices/select-place-slice';
 
-export default function RegionComponent({ regions }: RegionComponentProps) {
+export default function MainEightRegionListComponent({
+  regions,
+}: MainEightRegionComponentProps) {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   if (!regions || regions.length === 0) {
     return <div>No regions available.</div>;
@@ -17,12 +23,13 @@ export default function RegionComponent({ regions }: RegionComponentProps) {
               src={region.imageUrl}
               alt={region.name}
               className="rounded-lg hover:cursor-pointer object-cover w-full h-3/4"
-              onClick={() => navigate(`/select-place/${region.id}`)}
+              onClick={() => {
+                navigate(`/select-place`);
+                dispatch(changeMainArea(region.id)); // 전역 상태를 변경
+              }}
             />
             <div className="absolute bottom-0 left-0 right-0 bg-gray-100 bg-opacity-75 text-black p-4 rounded-b-lg">
-              <p className="font-main text-xl mb-2 font-bold">
-                {region.areaName}
-              </p>
+              <p className="font-main text-xl mb-2 font-bold">{region.name}</p>
               <p className="font-custom text-textPurple text-sm">
                 #해당 지역 인기 장소1 #해당 지역 인기 장소2 #해당 지역 인기
                 장소3

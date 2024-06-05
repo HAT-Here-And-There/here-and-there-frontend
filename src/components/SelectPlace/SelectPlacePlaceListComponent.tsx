@@ -1,30 +1,17 @@
-import { PlaceComponentProps } from '@_types/type';
+import { SelectPlacePlaceProps } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-// import { changeRegion, changeCity } from '@context/slices/select-place-slice'; 해당 action creator는 추후에 사용
-import { RootState } from '@context/store';
+import { useAppSelector } from '@context/store';
 
-export default function SelectPlaceComponent({ places }: PlaceComponentProps) {
+export default function SelectPlacePlaceListComponent({
+  places,
+}: SelectPlacePlaceProps) {
   const navigate = useNavigate();
-  const selectedRegion = useSelector(
-    (state: RootState) => state.selectPlace.selectedRegion
+
+  const selectedMainAreaId: number | null = useAppSelector(
+    (state) => state.selectPlace.selectedMainArea
   );
 
-  const selectedCity = useSelector(
-    (state: RootState) => state.selectPlace.selectedCity
-  );
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log(places);
-  }, []);
-
-  const handleSave = (placeId: number) => {
-    // 북마크 버튼 클릭 시 장소 저장할 로직을 추가하기
-    console.log(`Saved place with ID: ${placeId}`);
-  };
+  console.log(selectedMainAreaId);
 
   return (
     <div className="bg-dftBackgroundGray flex justify-center">
@@ -50,9 +37,6 @@ export default function SelectPlaceComponent({ places }: PlaceComponentProps) {
                 src="/assets/bookmark.svg"
                 alt="저장 버튼"
                 className="w-10 h-10 mb-2 hover:cursor-pointer"
-                onClick={() => {
-                  handleSave(place.id);
-                }}
               />
               <img
                 src="/assets/Message.svg"

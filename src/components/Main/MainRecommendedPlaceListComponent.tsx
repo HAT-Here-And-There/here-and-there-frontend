@@ -1,7 +1,9 @@
-import { PlaceComponentProps } from '@_types/type';
+import { MainRecommendPlaceComponentProps } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
 
-export default function PlaceComponent({ places }: PlaceComponentProps) {
+export default function MainRecommendedPlaceListComponent({
+  places,
+}: MainRecommendPlaceComponentProps) {
   const navigate = useNavigate();
 
   return (
@@ -24,7 +26,9 @@ export default function PlaceComponent({ places }: PlaceComponentProps) {
           >
             <img
               src={place.imageUrl}
-              alt={place.name}
+              alt={
+                place.name ? `This is ${place.name} image` : 'This is alt image'
+              }
               className="absolute top-0 left-0 w-full h-full object-cover"
             />
             <div className="absolute bottom-0 left-0 w-full bg-gray-800 text-white text-center py-2">
