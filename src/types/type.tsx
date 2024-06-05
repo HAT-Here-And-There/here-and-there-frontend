@@ -1,23 +1,25 @@
+// Main 페이지 관련 타입
 export interface MainRecommendPlace {
-  id: number;
-  name: string;
+  id: string;
+  name: string | null;
   imageUrl: string;
-  description: string;
 }
 
 export interface MainRecommendPlaceComponentProps {
   places: MainRecommendPlace[];
 }
 
-export interface Region {
+export interface MainEightRegion {
   id: number;
   name: string;
   imageUrl: string;
 }
 
-export interface RegionComponentProps {
-  regions: Region[];
+export interface MainEightRegionComponentProps {
+  regions: MainEightRegion[];
 }
+
+// Chat Room 관련 타입
 
 export interface ChatRoomData {
   id: number;
@@ -47,7 +49,15 @@ export interface chatProps {
   replies: chatProps[] | [];
 }
 
+// select place 관련 타입
+
 export interface selectPlaceProps {
   selectedRegion: null | string;
   selectedCity: null | string;
+}
+
+export interface SelectPlacePlace {
+  id: string;
+  name: string;
+  imageUrl: string;
 }

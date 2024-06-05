@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Region } from '@_types/type';
-import RegionComponent from '@components/Main/RegionComponent';
+import { MainEightRegion } from '@_types/type';
+import MainEightRegionListComponent from '@components/Main/MainEightRegionListComponent';
 
 export default function MainEightRegionList() {
-  const [regionList, setRegionList] = useState<Region[]>([]);
+  const [regionList, setRegionList] = useState<MainEightRegion[]>([]);
 
   useEffect(() => {
     // 임시 데이터를 사용하여 상태 설정
@@ -15,7 +15,7 @@ export default function MainEightRegionList() {
       const data = await response.json();
 
       console.log(data);
-      const processedData = data.map((item: Region) => {
+      const processedData = data.map((item: MainEightRegion) => {
         return {
           id: item.id,
           name: item.name,
@@ -29,5 +29,5 @@ export default function MainEightRegionList() {
     getEightRegionImage();
   }, []);
 
-  return <RegionComponent regions={regionList} />;
+  return <MainEightRegionListComponent regions={regionList} />;
 }

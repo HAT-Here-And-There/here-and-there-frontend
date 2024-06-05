@@ -1,7 +1,9 @@
-import { RegionComponentProps } from '@_types/type';
+import { MainEightRegionComponentProps } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
 
-export default function RegionComponent({ regions }: RegionComponentProps) {
+export default function MainEightRegionListComponent({
+  regions,
+}: MainEightRegionComponentProps) {
   const navigate = useNavigate();
 
   if (!regions || regions.length === 0) {

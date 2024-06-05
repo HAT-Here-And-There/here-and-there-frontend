@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Region } from '@_types/type';
+import { SelectPlacePlace } from '@_types/type';
 import SelectPlacePlaceListComponent from '@components/SelectPlace/SelectPlacePlaceListComponent';
 
 export default function SelectPlacePlaceList() {
-  const [selectPlace, setSelectPlace] = useState<Region[]>([]);
+  const [selectPlace, setSelectPlace] = useState<SelectPlacePlace[]>([]);
 
   useEffect(() => {
     async function getData() {
