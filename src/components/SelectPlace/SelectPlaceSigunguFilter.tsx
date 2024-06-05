@@ -1,3 +1,5 @@
+// 아무 권역도 선택되지 않았다면 일단 가장 인기 있는 10개의 도시를 꼽아줄 수도 있어야 함
+
 export default function SelectPlaceSigunguFilter() {
   const cities = [
     '포항',
