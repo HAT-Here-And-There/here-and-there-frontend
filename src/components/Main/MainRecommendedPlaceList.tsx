@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Place } from '@_types/type';
+import { MainRecommendPlace } from '@_types/type';
 import PlaceComponent from '@components/Main/PlaceComponent';
 
-export default function RecommendedPlace() {
-  const [recommendedPlaces, setRecommendedPlaces] = useState<Place[]>([]);
+export default function MainRecommendedPlaceList() {
+  const [recommendedPlaces, setRecommendedPlaces] = useState<
+    MainRecommendPlace[]
+  >([]);
 
   useEffect(() => {
     async function getData() {

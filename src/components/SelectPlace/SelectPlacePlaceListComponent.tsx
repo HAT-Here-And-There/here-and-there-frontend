@@ -1,11 +1,13 @@
-import { PlaceComponentProps } from '@_types/type';
+import { RegionComponentProps } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 // import { changeRegion, changeCity } from '@context/slices/select-place-slice'; 해당 action creator는 추후에 사용
 import { RootState } from '@context/store';
 
-export default function SelectPlaceComponent({ places }: PlaceComponentProps) {
+export default function SelectPlacePlaceListComponent({
+  regions,
+}: RegionComponentProps) {
   const navigate = useNavigate();
   const selectedRegion = useSelector(
     (state: RootState) => state.selectPlace.selectedRegion
@@ -18,7 +20,7 @@ export default function SelectPlaceComponent({ places }: PlaceComponentProps) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(places);
+    // console.log(places);
   }, []);
 
   const handleSave = (placeId: number) => {
@@ -29,7 +31,7 @@ export default function SelectPlaceComponent({ places }: PlaceComponentProps) {
   return (
     <div className="bg-dftBackgroundGray flex justify-center">
       <div className="w-full flex flex-col items-center pt-9 rounded-lg overflow-scroll scroll-box">
-        {places.map((place) => (
+        {regions.map((place) => (
           <div
             key={place.id}
             className="flex items-center w-[90%] h-[150px] mb-4 py-3.5 pl-10 pr-5 rounded-lg bg-white hover:cursor-pointer"

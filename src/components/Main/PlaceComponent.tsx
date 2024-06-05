@@ -1,7 +1,9 @@
-import { PlaceComponentProps } from '@_types/type';
+import { MainRecommendPlaceComponentProps } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
 
-export default function PlaceComponent({ places }: PlaceComponentProps) {
+export default function PlaceComponent({
+  places,
+}: MainRecommendPlaceComponentProps) {
   const navigate = useNavigate();
 
   return (

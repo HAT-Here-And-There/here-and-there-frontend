@@ -1,4 +1,4 @@
-export default function PlaceFilterComponent() {
+export default function SelectPlaceSigunguFilter() {
   const cities = [
     '포항',
     '경주',

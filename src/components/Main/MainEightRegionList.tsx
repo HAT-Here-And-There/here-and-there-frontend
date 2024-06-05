@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Region } from '@_types/type';
 import RegionComponent from '@components/Main/RegionComponent';
 
-export default function RegionList() {
+export default function MainEightRegionList() {
   const [regionList, setRegionList] = useState<Region[]>([]);
 
   useEffect(() => {

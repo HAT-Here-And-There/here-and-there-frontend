@@ -26,7 +26,7 @@
 ## 상세 페이지에서의 동작 설계
 
 1. main 페이지를 통해 상세 페이지로 들어가기 : 8권역 중 하나를 눌러서 들어감 => `/tour/places?majorRegionId={majorRegionId}` api를 통해서 접근. 이땐 majorRegionId는 1 ~ 8에 해당함
-2. 헤더의 "장소 목록"을 클릭하여 상세 페이지로 들어감 : 권역이 설정되지 않은 상태임. 전체 장소 중 top 20개를 보여줘야 함(`/tour/places?size=20`), 권역만 클릭하면 위의 majorRegionId를 이용한 api로 받아와야 함
+2. 헤더의 "장소 목록"을 클릭하여 상세 페이지로 들어감 : 권역이 설정되지 않은 상태임. 전체 장소 중 top 20개를 보여줘야 함(`/tour/places?size=20`), 권역만 클릭하면 위의 `majorRegionId`를 이용한 api로 받아와야 함, 권역과 시군구가 선택되면 해당 시군구에 해당하는 `areaId`, `sigunguId`를 쿼리 스트링으로 넘겨 데이터를 받아와야 함
 
 ## 이슈 생성 사항
 

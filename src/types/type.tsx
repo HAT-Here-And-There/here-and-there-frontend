@@ -1,12 +1,12 @@
-export interface Place {
+export interface MainRecommendPlace {
   id: number;
   name: string;
   imageUrl: string;
   description: string;
 }
 
-export interface PlaceComponentProps {
-  places: Place[];
+export interface MainRecommendPlaceComponentProps {
+  places: MainRecommendPlace[];
 }
 
 export interface Region {

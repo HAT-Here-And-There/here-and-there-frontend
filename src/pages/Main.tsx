@@ -1,14 +1,14 @@
 import Header from '@components/all/Header';
-import RecommendedPlace from '@components/Main/RecommendedPlace';
-import RegionList from '@components/Main/RegionList';
+import MainRecommendedPlaceList from '@components/Main/MainRecommendedPlaceList';
+import MainEightRegionList from '@components/Main/MainEightRegionList';
 import Footer from '@components/all/Footer';
 
 export default function Main() {
   return (
     <>
       <Header />
-      <RecommendedPlace />
-      <RegionList />
+      <MainRecommendedPlaceList />
+      <MainEightRegionList />
       <Footer />
     </>
   );

@@ -1,4 +1,4 @@
-export default function RegionFilter() {
+export default function SelectPlaceRegionFilter() {
   const regions = [
     '서울',
     '경기',
