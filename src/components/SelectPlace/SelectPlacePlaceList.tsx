@@ -6,10 +6,11 @@ import { useAppSelector } from '@context/store';
 export default function SelectPlacePlaceList() {
   const [selectPlace, setSelectPlace] = useState<SelectPlacePlace[]>([]);
 
+  // mainAreaId는 1 ~ 8로, 서울 ~ 제주에 대응
   const selectedMainAreaId = useAppSelector(
     (state) => state.selectPlace.selectedMainArea
   );
-
+  // sigunGu는 mainAreaId와는 별개인 areaId, sigunguId(둘다 string)으로 이루어짐
   const selectedSelectedSigungu = useAppSelector(
     (state) => state.selectPlace.selectedSigungu
   );
