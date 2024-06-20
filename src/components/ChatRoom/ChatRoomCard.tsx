@@ -133,14 +133,14 @@ export default function ChatRoomCard({
 
   return (
     <div className="w-[45%] h-full">
-      <div className="flex flex-col h-full bg-chatRoomPurple rounded-lg overflow-scroll scroll-box">
+      <div className="flex flex-col h-full bg-chatRoomPurple rounded-lg scroll-box">
         <div
-          className="w-full h-[10%] bg-indigo-600 text-white flex justify-start items-center pl-8"
+          className="w-full py-[4%] bg-indigo-600 text-white flex justify-start items-center pl-8"
           id="chat-input-header"
         >
           <h2 className="text-2xl font-bold font-main">{chatRoomData.name}</h2>
         </div>
-        <div id="message-content-box" className="grow p-4">
+        <div id="message-content-box" className="grow p-4 overflow-scroll scroll-box">
           {comments.map((comment) => (
             <div key={comment.id}>
               <div className="flex items-center mb-2">
@@ -172,7 +172,7 @@ export default function ChatRoomCard({
         <form
           onSubmit={handleCommentSubmit}
           id="message-input-area"
-          className="h-[10%] bg-indigo-600 flex items-center px-[5%]"
+          className="h-[10%] bg-indigo-600 flex items-center px-[5%] py-[3%]"
         >
           <div className="w-full flex justify-between gap-x-2 items-center">
             <input
