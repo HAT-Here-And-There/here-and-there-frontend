@@ -30,7 +30,7 @@ export default function ChatRoomCard({
     });
 
     sock.onopen = async () => {
-      console.log('connection opened!');
+      // console.log('connection opened!');
       setFrontSocket(sock);
     };
 
@@ -76,7 +76,7 @@ export default function ChatRoomCard({
     };
 
     sock.onclose = () => {
-      console.log('disconnected!');
+      // console.log('disconnected!');
       setFrontSocket(null);
     };
 
@@ -140,7 +140,10 @@ export default function ChatRoomCard({
         >
           <h2 className="text-2xl font-bold font-main">{chatRoomData.name}</h2>
         </div>
-        <div id="message-content-box" className="grow p-4 overflow-scroll scroll-box">
+        <div
+          id="message-content-box"
+          className="grow p-4 overflow-scroll scroll-box"
+        >
           {comments.map((comment) => (
             <div key={comment.id}>
               <div className="flex items-center mb-2">

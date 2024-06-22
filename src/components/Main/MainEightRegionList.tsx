@@ -14,7 +14,6 @@ export default function MainEightRegionList() {
 
       const data = await response.json();
 
-      console.log(data);
       const processedData = data.map((item: MainEightRegion) => {
         return {
           id: item.id,

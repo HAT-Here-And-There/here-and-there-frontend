@@ -9,7 +9,7 @@ export interface MainRecommendPlaceComponentProps {
   places: MainRecommendPlace[];
 }
 
-interface sigunGuInfo {
+export interface sigunGuInfo {
   // 아래의 인터페이스에서 활용하기 위한 것
   id: string;
   areaId: string;
