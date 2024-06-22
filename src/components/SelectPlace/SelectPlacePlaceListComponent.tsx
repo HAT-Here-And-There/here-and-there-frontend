@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { SelectPlacePlaceProps } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '@context/store';
@@ -6,12 +7,21 @@ export default function SelectPlacePlaceListComponent({
   places,
 }: SelectPlacePlaceProps) {
   const navigate = useNavigate();
+  const [savedPlaces, setSavedPlaces] = useState<number[]>([]);
 
   const selectedMainAreaId: number | null = useAppSelector(
     (state) => state.selectPlace.selectedMainArea
   );
 
   console.log(selectedMainAreaId);
+
+  const handleSavePlace = (placeId: number) => {
+    if (savedPlaces.includes(placeId)) {
+      setSavedPlaces(savedPlaces.filter((id) => id !== placeId));
+    } else {
+      setSavedPlaces([...savedPlaces, placeId]);
+    }
+  };
 
   return (
     <div className="bg-dftBackgroundGray flex justify-center">
@@ -33,11 +43,22 @@ export default function SelectPlacePlaceListComponent({
               </h2>
             </div>
             <div className="flex flex-col items-center mt-2">
-              <img
-                src="/assets/bookmark.svg"
-                alt="저장 버튼"
-                className="w-10 h-10 mb-2 hover:cursor-pointer"
-              />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSavePlace(Number(place.id));
+                }}
+              >
+                <img
+                  src={
+                    savedPlaces.includes(Number(place.id))
+                      ? '/assets/bookmark-saved.svg'
+                      : '/assets/bookmark.svg'
+                  }
+                  alt="저장 버튼"
+                  className="w-11 h-12 mb-2"
+                />
+              </button>
               <img
                 src="/assets/Message.svg"
                 alt="댓글 개수"
