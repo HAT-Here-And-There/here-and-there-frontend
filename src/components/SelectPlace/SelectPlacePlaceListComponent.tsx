@@ -1,23 +1,63 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SelectPlacePlaceProps } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '@context/store';
 
 export default function SelectPlacePlaceListComponent({
   places,
 }: SelectPlacePlaceProps) {
   const navigate = useNavigate();
-  const [savedPlaces, setSavedPlaces] = useState<number[]>([]);
+  const [savedPlaces, setSavedPlaces] = useState<string[]>([]);
 
-  const selectedMainAreaId: number | null = useAppSelector(
-    (state) => state.selectPlace.selectedMainArea
-  );
+  const fetchSavedPlaces = async () => {
+    try {
+      console.log('저장된 장소를 불러오기');
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/liked-place`
+      );
+      if (!response.ok) {
+        throw new Error('저장된 장소 불러오기 실패');
+      }
+      const data = await response.json();
+      console.log('불러온 저장된 장소:', data);
+      const savedPlaceIds = data.map((place: { id: string }) => place.id);
+      setSavedPlaces(savedPlaceIds);
+    } catch (error) {
+      console.error('저장된 장소 불러오기 실패:', error);
+    }
+  };
 
-  const handleSavePlace = (placeId: number) => {
-    if (savedPlaces.includes(placeId)) {
-      setSavedPlaces(savedPlaces.filter((id) => id !== placeId));
-    } else {
-      setSavedPlaces([...savedPlaces, placeId]);
+  useEffect(() => {
+    fetchSavedPlaces();
+  }, []);
+
+  const handleSavePlace = async (placeId: string) => {
+    const isSaved = savedPlaces.includes(placeId);
+    try {
+      console.log(isSaved ? '장소 삭제' : '장소 저장', placeId);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/liked-place`,
+        {
+          method: isSaved ? 'DELETE' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: placeId }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(isSaved ? '저장된 장소 삭제하기 실패' : '장소 저장 실패');
+      }
+
+      setSavedPlaces((prevSavedPlaces) => {
+        const updatedSavedPlaces = isSaved
+          ? prevSavedPlaces.filter((id) => id !== placeId)
+          : [...prevSavedPlaces, placeId];
+        console.log('업데이트된 저장된 장소: ', updatedSavedPlaces);
+        return updatedSavedPlaces;
+      });
+    } catch (error) {
+      console.error('장소 저장 오류 발생:', error);
     }
   };
 
@@ -44,12 +84,12 @@ export default function SelectPlacePlaceListComponent({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleSavePlace(Number(place.id));
+                  handleSavePlace(place.id);
                 }}
               >
                 <img
                   src={
-                    savedPlaces.includes(Number(place.id))
+                    savedPlaces.includes(place.id)
                       ? '/assets/bookmark-saved.svg'
                       : '/assets/bookmark.svg'
                   }
