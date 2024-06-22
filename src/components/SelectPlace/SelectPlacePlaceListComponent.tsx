@@ -13,8 +13,6 @@ export default function SelectPlacePlaceListComponent({
     (state) => state.selectPlace.selectedMainArea
   );
 
-  console.log(selectedMainAreaId);
-
   const handleSavePlace = (placeId: number) => {
     if (savedPlaces.includes(placeId)) {
       setSavedPlaces(savedPlaces.filter((id) => id !== placeId));
