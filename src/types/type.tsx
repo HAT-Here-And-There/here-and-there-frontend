@@ -9,10 +9,18 @@ export interface MainRecommendPlaceComponentProps {
   places: MainRecommendPlace[];
 }
 
+export interface sigunGuInfo {
+  // 아래의 인터페이스에서 활용하기 위한 것
+  id: string;
+  areaId: string;
+  name: string;
+}
+
 export interface MainEightRegion {
   id: number;
   name: string;
   imageUrl: string;
+  sigungu?: sigunGuInfo[]; // 해당 속성은 선택적임
 }
 
 export interface MainEightRegionComponentProps {

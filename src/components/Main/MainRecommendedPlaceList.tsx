@@ -19,7 +19,5 @@ export default function MainRecommendedPlaceList() {
     getData();
   }, []);
 
-  console.log(recommendedPlaces);
-
   return <MainRecommendedPlaceListComponent places={recommendedPlaces} />;
 }
