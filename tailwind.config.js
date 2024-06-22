@@ -16,6 +16,7 @@ export default {
         textPurple: '#5551FF',
         chatRoomPurple: 'rgba(85, 81, 255, 0.90)',
         bookmarkRed: '#FF8577',
+        backgroundLightGray: '#F7F8F9',
       },
     },
   },
