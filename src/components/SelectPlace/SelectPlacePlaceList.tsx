@@ -29,22 +29,35 @@ export default function SelectPlacePlaceList() {
     }
 
     async function getSigunguFilterData(areaId: string, sigunguId: string) {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_BACKEND_DOMAIN
-        }/tour/places?areaId=${areaId}&sigunguId=${sigunguId}`
-      );
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_BACKEND_DOMAIN
+          }/tour/places?areaId=${areaId}&sigunguId=${sigunguId}`
+        );
 
-      const result = await response.json();
+        if (!response.ok) {
+          throw new Error(`${response.status}`);
+        }
 
-      setSelectPlace(result.places);
+        const result = await response.json();
+
+        setSelectPlace(result.places);
+      } catch (error) {
+        if (error instanceof Error && error.message === '404') {
+          // 현재 해당 시군구에 데이터가 존재하지 않음
+          setSelectPlace([]);
+        }
+      }
     }
 
     async function getNofilterData() {
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/places?size=20`
       );
+
       const result = await response.json();
+
       setSelectPlace(result.places);
     }
 

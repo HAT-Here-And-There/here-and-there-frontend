@@ -10,7 +10,6 @@ export default function SelectPlacePlaceListComponent({
 
   const fetchSavedPlaces = async () => {
     try {
-      console.log('저장된 장소를 불러오기');
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/liked-place`
       );
@@ -18,7 +17,7 @@ export default function SelectPlacePlaceListComponent({
         throw new Error('저장된 장소 불러오기 실패');
       }
       const data = await response.json();
-      console.log('불러온 저장된 장소:', data);
+
       const savedPlaceIds = data.map((place: { id: string }) => place.id);
       setSavedPlaces(savedPlaceIds);
     } catch (error) {
@@ -33,7 +32,6 @@ export default function SelectPlacePlaceListComponent({
   const handleSavePlace = async (placeId: string) => {
     const isSaved = savedPlaces.includes(placeId);
     try {
-      console.log(isSaved ? '장소 삭제' : '장소 저장', placeId);
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/liked-place`,
         {
@@ -46,14 +44,15 @@ export default function SelectPlacePlaceListComponent({
       );
 
       if (!response.ok) {
-        throw new Error(isSaved ? '저장된 장소 삭제하기 실패' : '장소 저장 실패');
+        throw new Error(
+          isSaved ? '저장된 장소 삭제하기 실패' : '장소 저장 실패'
+        );
       }
 
       setSavedPlaces((prevSavedPlaces) => {
         const updatedSavedPlaces = isSaved
           ? prevSavedPlaces.filter((id) => id !== placeId)
           : [...prevSavedPlaces, placeId];
-        console.log('업데이트된 저장된 장소: ', updatedSavedPlaces);
         return updatedSavedPlaces;
       });
     } catch (error) {

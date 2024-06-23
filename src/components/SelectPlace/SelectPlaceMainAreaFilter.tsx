@@ -1,5 +1,8 @@
 import { useAppDispatch } from '@context/store';
-import { changeMainArea } from '@context/slices/select-place-slice';
+import {
+  changeMainArea,
+  changeSigungu,
+} from '@context/slices/select-place-slice';
 
 export default function SelectPlaceMainAreaFilter() {
   const dispatch = useAppDispatch();
@@ -14,13 +17,18 @@ export default function SelectPlaceMainAreaFilter() {
     '제주',
   ];
 
+  function handleClickMainArea(idx: number) {
+    dispatch(changeMainArea(idx + 1));
+    dispatch(changeSigungu(null));
+  }
+
   return (
     <div className="flex text-gray-400 items-center justify-evenly bg-white-800 h-[85px] min-h-[85px] border-t border-b border-slate-200">
       {regions.map((region, index) => (
         <div
           key={region}
           className="hover:cursor-pointer hover:text-black active:text-black font-main text-lg font-color"
-          onClick={() => dispatch(changeMainArea(index + 1))}
+          onClick={() => handleClickMainArea(index)}
         >
           {region}
         </div>

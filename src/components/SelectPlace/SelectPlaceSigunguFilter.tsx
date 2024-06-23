@@ -5,12 +5,18 @@ import { MainEightRegion, sigunGuInfo } from '@_types/type';
 
 export default function SelectPlaceSigunguFilter() {
   const [allSigunGuList, setAllSigunGuList] = useState<sigunGuInfo[][]>([]);
-  const [showingSigunguList, setShowingSigunguList] = useState<sigunGuInfo[]>([]);
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [showingSigunguList, setShowingSigunguList] = useState<sigunGuInfo[]>(
+    []
+  );
+  // const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
   // mainAreaId는 1 ~ 8로, 서울 ~ 제주에 대응
   const selectedMainAreaId = useAppSelector(
     (state) => state.selectPlace.selectedMainArea
+  );
+
+  const selectedSigungu = useAppSelector(
+    (state) => state.selectPlace.selectedSigungu
   );
 
   const dispatch = useAppDispatch();
@@ -35,22 +41,17 @@ export default function SelectPlaceSigunguFilter() {
 
   useEffect(() => {
     if (selectedMainAreaId !== null) {
-      console.log('yes!');
-      console.log(allSigunGuList);
       setShowingSigunguList(allSigunGuList[selectedMainAreaId - 1]);
     }
-  }, [selectedMainAreaId]);
+  }, [selectedMainAreaId, allSigunGuList]);
+
+  const handleCityClick = (city: sigunGuInfo) => {
+    dispatch(changeSigungu({ areaId: city.areaId, sigunguId: city.id }));
+  };
 
   if (showingSigunguList === undefined) {
     return null;
   }
-
-  const handleCityClick = (city: sigunGuInfo) => {
-    setSelectedCity(city.id);
-    dispatch(
-      changeSigungu({ areaId: city.areaId, sigunguId: city.id })
-    );
-  };
 
   return (
     <div className="flex text-black items-center justify-evenly bg-white-800 h-[85px] min-h-[85px]">
@@ -59,7 +60,12 @@ export default function SelectPlaceSigunguFilter() {
           <div
             key={city.name}
             className={`cursor-pointer w-36 py-2 text-center rounded-2xl font-main text-lg
-              ${selectedCity === city.id ? 'bg-textPurple text-white' : 'bg-backgroundLightGray hover:bg-chatRoomPurple hover:text-white active:text-white'}`}
+              ${
+                selectedSigungu?.sigunguId === city.id &&
+                selectedSigungu.areaId === city.areaId
+                  ? 'bg-textPurple text-white'
+                  : 'bg-backgroundLightGray hover:bg-chatRoomPurple hover:text-white active:text-white'
+              }`}
             onClick={() => handleCityClick(city)}
           >
             {city.name}
