@@ -79,3 +79,10 @@ export interface SelectPlacePlace {
 export interface SelectPlacePlaceProps {
   places: SelectPlacePlace[];
 }
+
+export interface travelPlanProp {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+}

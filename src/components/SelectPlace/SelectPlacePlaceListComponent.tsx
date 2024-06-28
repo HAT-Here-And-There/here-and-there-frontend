@@ -61,7 +61,7 @@ export default function SelectPlacePlaceListComponent({
   };
 
   return (
-    <div className="bg-dftBackgroundGray flex justify-center">
+    <div className="bg-dftBackgroundGray flex justify-center grow">
       <div className="w-full flex flex-col items-center pt-9 rounded-lg overflow-scroll scroll-box">
         {places.map((place) => (
           <div
