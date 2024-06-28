@@ -20,7 +20,9 @@ export default {
       },
       height: {
         travelListSection: 'calc(100% - 160px)',
+        selectPlaceListMainSection: 'cal(100dvh - 330px)',
       },
+      minHeight: {},
     },
   },
 };
