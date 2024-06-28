@@ -18,6 +18,9 @@ export default {
         bookmarkRed: '#FF8577',
         backgroundLightGray: '#F7F8F9',
       },
+      height: {
+        travelListSection: 'calc(100% - 160px)',
+      },
     },
   },
 };
