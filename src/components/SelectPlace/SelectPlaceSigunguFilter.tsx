@@ -5,10 +5,7 @@ import { MainEightRegion, sigunGuInfo } from '@_types/type';
 
 export default function SelectPlaceSigunguFilter() {
   const [allSigunGuList, setAllSigunGuList] = useState<sigunGuInfo[][]>([]);
-  const [showingSigunguList, setShowingSigunguList] = useState<sigunGuInfo[]>(
-    []
-  );
-  // const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [showingSigunguList, setShowingSigunguList] = useState<sigunGuInfo[]>([]);
 
   // mainAreaId는 1 ~ 8로, 서울 ~ 제주에 대응
   const selectedMainAreaId = useAppSelector(
@@ -28,6 +25,8 @@ export default function SelectPlaceSigunguFilter() {
       );
 
       const majorRegionData = await response.json();
+      // 백엔드 데이터 확인
+      console.log('Major Region Data:', majorRegionData);
 
       const sigunGuList = majorRegionData.map((regionData: MainEightRegion) => {
         return regionData.sigungu;
@@ -41,36 +40,39 @@ export default function SelectPlaceSigunguFilter() {
 
   useEffect(() => {
     if (selectedMainAreaId !== null) {
-      setShowingSigunguList(allSigunGuList[selectedMainAreaId - 1]);
+      setShowingSigunguList(allSigunGuList[selectedMainAreaId - 1] || []);
     }
   }, [selectedMainAreaId, allSigunGuList]);
 
   const handleCityClick = (city: sigunGuInfo) => {
     dispatch(changeSigungu({ areaId: city.areaId, sigunguId: city.id }));
+    console.log(city);
   };
 
-  if (showingSigunguList === undefined) {
+  if (showingSigunguList.length === 0) {
     return null;
   }
 
   return (
-    <div className="flex text-black items-center justify-evenly bg-white-800 h-[85px] min-h-[85px]">
-      {selectedMainAreaId !== null &&
-        showingSigunguList.map((city) => (
-          <div
-            key={city.name}
-            className={`cursor-pointer w-36 py-2 text-center rounded-2xl font-main text-lg
-              ${
-                selectedSigungu?.sigunguId === city.id &&
-                selectedSigungu.areaId === city.areaId
-                  ? 'bg-textPurple text-white'
-                  : 'bg-backgroundLightGray hover:bg-chatRoomPurple hover:text-white active:text-white'
-              }`}
-            onClick={() => handleCityClick(city)}
-          >
-            {city.name}
-          </div>
-        ))}
+    <div className="flex text-black items-center justify-evenly bg-white-800 h-[85px] min-h-[85px] overflow-x-auto w-full">
+      <div className="flex whitespace-nowrap space-x-4 px-4 w-full">
+        {selectedMainAreaId !== null &&
+          showingSigunguList.map((city) => (
+            <div
+              key={city.name}
+              className={`cursor-pointer flex-shrink-0 w-36 py-2 text-center rounded-2xl font-main text-lg
+                ${
+                  selectedSigungu?.sigunguId === city.id &&
+                  selectedSigungu.areaId === city.areaId
+                    ? 'bg-textPurple text-white'
+                    : 'bg-backgroundLightGray hover:bg-chatRoomPurple hover:text-white active:text-white'
+                }`}
+              onClick={() => handleCityClick(city)}
+            >
+              {city.name}
+            </div>
+          ))}
+      </div>
     </div>
   );
 }
