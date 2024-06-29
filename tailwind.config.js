@@ -17,12 +17,12 @@ export default {
         chatRoomPurple: 'rgba(85, 81, 255, 0.90)',
         bookmarkRed: '#FF8577',
         backgroundLightGray: '#F7F8F9',
+        borderLightGray: '#d9d9d9',
       },
       height: {
         travelListSection: 'calc(100% - 160px)',
         selectPlaceListMainSection: 'cal(100dvh - 330px)',
       },
-      minHeight: {},
     },
   },
 };

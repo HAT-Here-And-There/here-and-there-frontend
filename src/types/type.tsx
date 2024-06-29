@@ -81,7 +81,7 @@ export interface SelectPlacePlaceProps {
 }
 
 export interface travelPlanProp {
-  id: number;
+  id?: number;
   name: string;
   startDate: string;
   endDate: string;
