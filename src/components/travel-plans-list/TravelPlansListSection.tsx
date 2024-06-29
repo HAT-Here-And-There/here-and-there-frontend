@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { travelPlanProp } from '@_types/type';
+import CategoryBar from './CategoryBar';
+import TravelPlanItem from './TravelPlanItem';
 
 export default function TravelPlansListSection() {
   const [travelPlanList, setTravelPlanList] = useState<travelPlanProp[]>([]);
@@ -29,9 +31,20 @@ export default function TravelPlansListSection() {
   console.log(travelPlanList);
   return (
     <main className="h-travelListSection flex flex-col items-center mt-20">
-      <p className="w-[70%] text-2xl font-main mb-[20px]">
+      <p className="w-[80%] text-2xl font-main mb-[20px]">
         여행 계획서 둘러보기
       </p>
+      <CategoryBar />
+      {travelPlanList.map((travelplan) => {
+        return (
+          <TravelPlanItem
+            key={travelplan.id}
+            name={travelplan.name}
+            startDate={travelplan.startDate}
+            endDate={travelplan.endDate}
+          />
+        );
+      })}
     </main>
   );
 }
