@@ -25,3 +25,9 @@
     display: none;
   }
 }
+
+@layer components {
+  .react-calendar {
+    @apply w-[60%] h-fit border-none;
+  }
+}

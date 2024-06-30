@@ -5,10 +5,16 @@ import TravelPlanItem from './TravelPlanItem';
 import PlanCreateButton from './PlanCreateButton';
 import Modal from 'react-modal';
 import ReactModal from 'react-modal';
+import TravelNameInput from './modal-content/TravelNameInput';
+import TravelCalendar from './modal-content/TravelCalendar';
 
 export default function TravelPlansListSection() {
   const [travelPlanList, setTravelPlanList] = useState<travelPlanProp[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [planStepState, setPlanStepState] = useState<number>(0); // 0 일때 아직 생성 이전, 1일때 제목, 2일때 날짜
+  const [planName, setPlanName] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
 
   useEffect(() => {
     async function getTravelPlanList() {
@@ -43,9 +49,6 @@ export default function TravelPlansListSection() {
       left: '0',
       right: '0',
       bottom: '0',
-      // display: 'flex',
-      // justifyContent: 'center',
-      // alignItems: 'center',
     },
     content: {
       width: '70%',
@@ -59,11 +62,20 @@ export default function TravelPlansListSection() {
       bottom: '15%',
       borderRadius: '15px',
       display: 'flex',
+      justifyContent: 'center',
       alignItems: 'center',
       position: 'relative',
       backgroundColor: '#5551FF',
     },
   };
+
+  function handleCloseModal() {
+    setIsModalOpen(false);
+    setPlanStepState(0);
+    setPlanName('');
+    setStartDate('');
+    setEndDate('');
+  }
 
   return (
     <main className="h-travelListSection flex flex-col items-center mt-20 relative">
@@ -81,15 +93,37 @@ export default function TravelPlansListSection() {
           />
         );
       })}
-      <PlanCreateButton handleIsModalState={setIsModalOpen} />
-      <Modal isOpen={isModalOpen} style={customModalStyles}>
-        {/* <div className="absolute top-5 right-5">x</div> */}
+      <PlanCreateButton
+        handleIsModalState={setIsModalOpen}
+        handlePlanStepState={setPlanStepState}
+      />
+      <Modal
+        isOpen={isModalOpen}
+        style={customModalStyles}
+        onRequestClose={() => handleCloseModal()}
+      >
         <img
           src="/assets/close.svg"
           alt="This is closing UI image"
           className="absolute top-5 right-5 hover:cursor-pointer"
-          onClick={() => setIsModalOpen(false)}
+          onClick={() => handleCloseModal()}
         />
+        {planStepState === 1 && (
+          <TravelNameInput
+            planName={planName}
+            handlePlanName={setPlanName}
+            handlePlanStepState={setPlanStepState}
+          />
+        )}
+        {planStepState === 2 && (
+          <TravelCalendar
+            planName={planName}
+            startDate={startDate}
+            handleStartDate={setStartDate}
+            endDate={endDate}
+            handleEndDate={setEndDate}
+          />
+        )}
       </Modal>
     </main>
   );
