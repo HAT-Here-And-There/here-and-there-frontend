@@ -28,6 +28,29 @@
 
 @layer components {
   .react-calendar {
-    @apply w-[60%] h-fit border-none;
+    @apply w-[60%] h-fit border-none flex flex-col;
+  }
+  .react-calendar__navigation {
+    @apply w-full flex justify-center items-center p-2;
+  }
+  .react-calendar__navigation > button {
+    flex-grow: 1;
+  }
+  .react-calendar__month-view {
+    @apply h-[];
+  }
+
+  .react-calendar__tile {
+    @apply text-center p-2 hover:bg-gray-200;
+  }
+
+  .custom-selected {
+    background-color: rgb(37 99 235);
+    color: white;
+    border-radius: 0.5rem;
+  }
+  .custom-range {
+    background-color: rgb(191 219 254);
+    color: black;
   }
 }
