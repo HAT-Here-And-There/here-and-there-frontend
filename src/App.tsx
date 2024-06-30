@@ -6,6 +6,7 @@ import ChatRoomPage from '@pages/ChatRoom';
 import SignUpPage from '@pages/SignUp';
 import TravelPlanPage from '@pages/TravelPlan';
 import TravelPlansListPage from '@pages/TravelPlansList';
+import Modal from 'react-modal';
 
 function App() {
   return (
@@ -26,5 +27,7 @@ function App() {
     </BrowserRouter>
   );
 }
+
+Modal.setAppElement('#root');
 
 export default App;
