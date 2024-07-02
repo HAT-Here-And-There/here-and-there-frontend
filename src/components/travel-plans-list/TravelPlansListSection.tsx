@@ -13,8 +13,6 @@ export default function TravelPlansListSection() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [planStepState, setPlanStepState] = useState<number>(0); // 0 일때 아직 생성 이전, 1일때 제목, 2일때 날짜
   const [planName, setPlanName] = useState<string>('');
-  // const [startDate, setStartDate] = useState<string>('');
-  // const [endDate, setEndDate] = useState<string>('');
 
   useEffect(() => {
     async function getTravelPlanList() {

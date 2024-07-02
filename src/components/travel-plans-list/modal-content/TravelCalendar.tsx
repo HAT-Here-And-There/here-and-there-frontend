@@ -2,13 +2,18 @@
 import Calendar from 'react-calendar';
 // import 'react-calendar/dist/Calendar.css';
 import { useState } from 'react';
-
-interface travelDates {
-  startDate: Date | null;
-  endDate: Date | null;
-}
+import { useAppDispatch } from '@context/store';
+import {
+  changePlanName,
+  changeStartDate,
+  changeEndDate,
+} from '@context/slices/travel-plan-slice';
+import { travelDates } from '@_types/type';
+import { useNavigate } from 'react-router-dom';
 
 export default function TravelCalendar({ planName }: { planName: string }) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [dates, setDates] = useState<travelDates>({
     startDate: null,
     endDate: null,
@@ -68,6 +73,12 @@ export default function TravelCalendar({ planName }: { planName: string }) {
   };
 
   console.log(dates);
+  function handleClickCompletButton() {
+    dispatch(changePlanName(planName));
+    dispatch(changeStartDate(dates.startDate));
+    dispatch(changeEndDate(dates.endDate));
+    navigate(`/travel-plan/${planName}`);
+  }
 
   return (
     <div className="w-[80%] h-[80%] bg-white rounded-2xl flex flex-col justify-start items-center pt-[50px] gap-y-3">
@@ -78,7 +89,10 @@ export default function TravelCalendar({ planName }: { planName: string }) {
         tileClassName={tileClassName}
       />
       <div id="finish-button" className="w-[80%] flex justify-end items-center">
-        <button className="w-[150px] h-[45px] rounded-lg text-xl font-main bg-textPurple text-white disabled:cursor-not-allowed disabled:opacity-50">
+        <button
+          className="w-[150px] h-[45px] rounded-lg text-xl font-main bg-textPurple text-white disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={handleClickCompletButton}
+        >
           완료하기
         </button>
       </div>
