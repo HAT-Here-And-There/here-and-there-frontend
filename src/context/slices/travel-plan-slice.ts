@@ -8,7 +8,7 @@ const initialTravelPlanState: travelDates & { name: string | null } = {
 };
 
 const travelPlanSlice = createSlice({
-  name: 'traelPlan',
+  name: 'travelPlan',
   initialState: initialTravelPlanState,
   reducers: {
     changePlanName: (state, action: PayloadAction<string | null>) => {

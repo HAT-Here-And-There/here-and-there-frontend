@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import selectPlaceReducer from '@context/slices/select-place-slice';
+import travelPlanReducer from '@context/slices/travel-plan-slice';
 import { TypedUseSelectorHook, useSelector, useDispatch } from 'react-redux';
 
 export const store = configureStore({
   reducer: {
     selectPlace: selectPlaceReducer,
+    travelPlan: travelPlanReducer,
   },
 });
 

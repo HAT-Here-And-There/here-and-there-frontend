@@ -1,7 +1,12 @@
-import { useParams } from 'react-router-dom';
+import { useAppSelector } from '@context/store';
 
 export default function TravelPlanPage() {
-  const { travelPlanName } = useParams();
+  const travelPlanName = useAppSelector((state) => state.travelPlan.name);
+  const travelStartDate = useAppSelector((state) => state.travelPlan.startDate);
+  const travelEndDate = useAppSelector((state) => state.travelPlan.endDate);
 
-  return <div>This is travel plan {travelPlanName} page</div>;
+  console.log(travelPlanName);
+  console.log(travelStartDate);
+  console.log(travelEndDate);
+  return <div>This is travel plan page</div>;
 }
