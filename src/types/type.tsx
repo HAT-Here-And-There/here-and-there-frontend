@@ -86,3 +86,8 @@ export interface travelPlanProp {
   startDate: string;
   endDate: string;
 }
+
+export interface travelDates {
+  startDate: Date | null;
+  endDate: Date | null;
+}
