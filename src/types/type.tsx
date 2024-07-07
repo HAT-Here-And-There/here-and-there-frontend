@@ -91,3 +91,13 @@ export interface travelDates {
   startDate: Date | null;
   endDate: Date | null;
 }
+
+
+// travel-plan-all 관련 타입
+
+export interface PlaceChatProps {
+  place: SelectPlacePlace;
+  chatRoomData: ChatRoomData | null;
+}
+
+

@@ -25,7 +25,7 @@ export default function ChatRoomCard({
   }, [comments]);
 
   useEffect(() => {
-    const sock = new SockJS(`http://172.233.70.162/chat/place/`, false, {
+    const sock = new SockJS(`${import.meta.env.VITE_BACKEND_DOMAIN}/chat/place/`, false, {
       server: placeId,
     });
 
