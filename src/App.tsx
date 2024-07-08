@@ -6,6 +6,7 @@ import ChatRoomPage from '@pages/ChatRoom';
 import SignUpPage from '@pages/SignUp';
 import TravelPlanPage from '@pages/TravelPlan';
 import TravelPlansListPage from '@pages/TravelPlansList';
+import TravelPlanList from '@pages/TravelPlanAll';
 import Modal from 'react-modal';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/select-place" element={<SelectPlacePage />} />
         <Route path="/travel-plans-list" element={<TravelPlansListPage />} />
+        <Route path="/travel-plan-all" element={<TravelPlanList />} />
         <Route path="/chatroom">
           <Route path=":placeId" element={<ChatRoomPage />} />
         </Route>

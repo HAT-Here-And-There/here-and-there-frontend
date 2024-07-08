@@ -91,3 +91,20 @@ export interface travelDates {
   startDate: Date | null;
   endDate: Date | null;
 }
+
+
+// travel-plan-all 관련 타입
+
+export interface PlaceChatProps {
+  place: SelectPlacePlace;
+  chatRoomData: ChatRoomData | null;
+}
+
+export interface BookmarkedPlaceListProps {
+  onPlaceClick: (placeId: string) => void;
+  places: SelectPlacePlace[];
+  onMoveUp: (index: number) => void;
+  onMoveDown: (index: number) => void;
+  onDelete: (index: number) => void;
+}
+
