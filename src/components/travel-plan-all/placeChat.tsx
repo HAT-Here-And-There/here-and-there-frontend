@@ -3,6 +3,7 @@ import SockJS from 'sockjs-client';
 import { chatProps, commingMessageDataProp, PlaceChatProps } from '@_types/type';
 import ChatReply from '@components/ChatRoom/ChatReply';
 import ChatRoomCard from '@components/ChatRoom/ChatRoomCard';
+import { fetchSavedPlaces } from '@utils/fetchFunctions';
 
 export default function PlaceChat({ place, chatRoomData = null }: PlaceChatProps) {
   const [newComment, setNewComment] = useState<string>('');
@@ -14,48 +15,11 @@ export default function PlaceChat({ place, chatRoomData = null }: PlaceChatProps
   const commentInputRef = useRef<HTMLInputElement>(null);
   const commentsRef = useRef<chatProps[]>(comments);
 
-  const fetchSavedPlaces = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_DOMAIN}/tour/liked-place`);
-      if (!response.ok) {
-        throw new Error('저장된 장소 불러오기 실패');
-      }
-      const data = await response.json();
+  useEffect(() => {
+    fetchSavedPlaces().then((data) => {
       const savedPlaceIds = data.map((place: { id: string }) => place.id);
       setSavedPlaces(savedPlaceIds);
-    } catch (error) {
-      console.error('저장된 장소 불러오기 실패:', error);
-    }
-  };
-
-  const handleSavePlace = async (placeId: string) => {
-    const isSaved = savedPlaces.includes(placeId);
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_DOMAIN}/tour/liked-place`, {
-        method: isSaved ? 'DELETE' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: placeId }),
-      });
-
-      if (!response.ok) {
-        throw new Error(isSaved ? '저장된 장소 삭제하기 실패' : '장소 저장 실패');
-      }
-
-      setSavedPlaces((prevSavedPlaces) => {
-        const updatedSavedPlaces = isSaved
-          ? prevSavedPlaces.filter((id) => id !== placeId)
-          : [...prevSavedPlaces, placeId];
-        return updatedSavedPlaces;
-      });
-    } catch (error) {
-      console.error('장소 저장 오류 발생:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchSavedPlaces();
+    }).catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -153,15 +117,41 @@ export default function PlaceChat({ place, chatRoomData = null }: PlaceChatProps
     setShowChatRoomList((prev) => !prev);
   };
 
+  const handleSavePlace = async (placeId: string) => {
+    const isSaved = savedPlaces.includes(placeId);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_DOMAIN}/tour/liked-place`, {
+        method: isSaved ? 'DELETE' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: placeId }),
+      });
+
+      if (!response.ok) {
+        throw new Error(isSaved ? '저장된 장소 삭제하기 실패' : '장소 저장 실패');
+      }
+
+      setSavedPlaces((prevSavedPlaces) => {
+        const updatedSavedPlaces = isSaved
+          ? prevSavedPlaces.filter((id) => id !== placeId)
+          : [...prevSavedPlaces, placeId];
+        return updatedSavedPlaces;
+      });
+    } catch (error) {
+      console.error('장소 저장 오류 발생:', error);
+    }
+  };
+
   return (
-    <div className="w-[92%] h-[86%] ml-12 bg-chatRoomPurple rounded-lg relative">
-      <div className="flex items-center p-4">
+    <div className="flex flex-col w-full h-full p-4 bg-chatRoomPurple rounded-lg">
+      <div className="flex items-center mb-4">
         <img
           src="/assets/HAT.svg"
           alt="User avatar"
-          className="w-30 h-20 mr-4 ml-12 mt-6 mb-4"
+          className="w-30 h-20 mr-4 ml-12"
         />
-        <h2 className="text-3xl font-main mt-4">{place.name}</h2>
+        <h2 className="text-3xl font-main">{place.name}</h2>
         <div className="flex-grow" />
         <button onClick={() => handleSavePlace(place.id)} className="mr-4">
           <img
@@ -171,23 +161,23 @@ export default function PlaceChat({ place, chatRoomData = null }: PlaceChatProps
           />
         </button>
       </div>
-      <div className="flex justify-center">
-        <div className="w-[90%] h-[400px] bg-gray-300 rounded-lg mb-4">
+      <div className="flex justify-center mb-4">
+        <div className="w-[90%] h-[400px] bg-gray-300 rounded-lg">
           <img src={place.imageUrl} alt="Place" className="w-full h-full object-cover rounded-lg" />
         </div>
       </div>
-      <div className="p-4 relative">
-        <p className="text-right mb-4">12,542명이 소통하고 있어요!</p>
+      <div className="flex-grow p-4 relative overflow-y-auto">
+        <p className="text-right">12,542명이 소통하고 있어요!</p>
         <img
           src="/assets/Comment.svg"
           alt="comment-icon"
-          className="w-10 h-10 absolute bottom-8 left-12 cursor-pointer"
+          className="w-10 h-10 absolute bottom-48 left-12 cursor-pointer"
           onClick={toggleChatRoomList}
         />
         {showChatRoomList && chatRoomData && <ChatRoomCard chatRoomData={chatRoomData} placeId={place.id} />}
         {comments.map((comment) => (
           <div key={comment.id}>
-            <div className="flex items-center mb-2">
+            <div className="flex items-center mt-4">
               <img src="/assets/HAT.svg" alt="User avatar" className="w-10 h-10 mr-2" />
               <div className="flex-grow bg-gray-100 p-2 rounded-lg">{comment.content}</div>
               <button className="ml-2" onClick={() => handleReply(comment.id)}>
@@ -200,23 +190,21 @@ export default function PlaceChat({ place, chatRoomData = null }: PlaceChatProps
           </div>
         ))}
       </div>
-      <form onSubmit={handleCommentSubmit} id="message-input-area" className="h-[10%] bg-indigo-600 flex items-center px-[5%] py-[3%] mt-28">
-        <div className="w-full flex justify-between gap-x-2 items-center">
-          <input
-            ref={commentInputRef}
-            id="comment"
-            type="text"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="댓글을 입력하세요..."
-            aria-label="댓글을 입력하세요"
-            autoComplete="off"
-            className="grow rounded-sm p-4"
-          />
-          <button type="submit" className="h-full text-xl">
-            전송
-          </button>
-        </div>
+      <form onSubmit={handleCommentSubmit} className="flex items-center px-4 py-2 bg-indigo-600 rounded-lg mt-4">
+        <input
+          ref={commentInputRef}
+          id="comment"
+          type="text"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          placeholder="댓글을 입력하세요..."
+          aria-label="댓글을 입력하세요"
+          autoComplete="off"
+          className="flex-grow p-2 rounded-lg"
+        />
+        <button type="submit" className="ml-2 text-white text-xl">
+          전송
+        </button>
       </form>
     </div>
   );
