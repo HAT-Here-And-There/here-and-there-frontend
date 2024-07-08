@@ -100,4 +100,11 @@ export interface PlaceChatProps {
   chatRoomData: ChatRoomData | null;
 }
 
+export interface BookmarkedPlaceListProps {
+  onPlaceClick: (placeId: string) => void;
+  places: SelectPlacePlace[];
+  onMoveUp: (index: number) => void;
+  onMoveDown: (index: number) => void;
+  onDelete: (index: number) => void;
+}
 
