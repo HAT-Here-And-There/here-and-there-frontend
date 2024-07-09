@@ -1,4 +1,12 @@
-import { BookmarkedPlaceListProps } from '@_types/type';
+import { SelectPlacePlace } from '@_types/type';
+
+interface BookmarkedPlaceListProps {
+  onPlaceClick: (placeId: string) => void;
+  places: SelectPlacePlace[];
+  onMoveUp: (index: number) => void;
+  onMoveDown: (index: number) => void;
+  onDelete: (index: number) => void;
+}
 
 export default function BookmarkedPlaceList({
   onPlaceClick,
@@ -7,6 +15,7 @@ export default function BookmarkedPlaceList({
   onMoveDown,
   onDelete,
 }: BookmarkedPlaceListProps) {
+
   return (
     <div className="bg-gray-200 h-full flex justify-center grow pl-12">
       <div className="bg-white w-[450px] flex flex-col items-center overflow-scroll scroll-box">
@@ -17,36 +26,31 @@ export default function BookmarkedPlaceList({
           >
             <div className="flex justify-between items-center mb-2">
               <h2
-                className="text-lg font-bold font-main"
+                className="text-2xl font-bold font-main"
                 onClick={() => onPlaceClick(place.id)}
               >
                 {place.name}
               </h2>
-              <div className="flex">
+              <div className="flex space-x-2">
                 <button
                   onClick={() => onMoveUp(index)}
                   disabled={index === 0}
-                  className="px-1 disabled:opacity-50"
+                  className="px-2 py-1 rounded disabled:opacity-50"
                 >
                   <img src="/assets/UP.svg" alt="위로" className="w-6 h-6" />
                 </button>
                 <button
                   onClick={() => onMoveDown(index)}
                   disabled={index === places.length - 1}
-                  className="px-1 disabled:opacity-50"
+                  className="px-2 py-1 rounded disabled:opacity-50"
                 >
-                  <img
-                    src="/assets/DOWN.svg"
-                    alt="아래로"
-                    className="w-6 h-6"
-                  />
+                  <img src="/assets/DOWN.svg" alt="아래로" className="w-6 h-6" />
                 </button>
-                <button onClick={() => onDelete(index)} className="px-2">
-                  <img
-                    src="/assets/delete-icon.svg"
-                    alt="삭제"
-                    className="w-6 h-6"
-                  />
+                <button
+                  onClick={() => onDelete(index)}
+                  className="px-2 py-1 rounded"
+                >
+                  <img src="/assets/delete-icon.svg" alt="삭제" className="w-6 h-6" />
                 </button>
               </div>
             </div>
