@@ -37,7 +37,7 @@ export default function PlanListALL() {
   };
 
   return (
-    <main className="flex h-[calc(100vh-100px)]"> 
+    <main className="flex h-[calc(100vh-160px)]"> 
       <div className="flex w-full h-full overflow-y-scroll">
         <div className="w-1/3 h-full  flex-grow-0">
           <BookmarkedPlaceList 
