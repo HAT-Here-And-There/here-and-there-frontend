@@ -5,7 +5,6 @@ import {
   commingMessageDataProp,
   PlaceChatProps,
 } from '@_types/type';
-import ChatRoomCard from '@components/ChatRoom/ChatRoomCard';
 import { fetchSavedPlaces } from '@utils/fetchFunctions';
 import ChatModal from '@components/travel-plan-all/chatModal';
 
@@ -106,8 +105,10 @@ export default function PlaceChat({
     }
   }, [place.id]);
 
-  const handleCommentSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleCommentSubmit = (
+    newComment: string,
+    replyingId: string | null
+  ) => {
     const sendingMessage =
       replyingId === null
         ? {
@@ -213,21 +214,21 @@ export default function PlaceChat({
             className="w-10 h-10 -mt-9 cursor-pointer"
             onClick={handleCommentIconClick}
           />
-          {chatRoomData && (
-            <ChatRoomCard chatRoomData={chatRoomData} placeId={place.id} />
-          )}
-          {comments.slice(0, 1).map((comment) => (
-            <div key={comment.id}>
+          {comments.length > 0 && (
+            <div key={comments[0].id}>
               <div className="flex items-center mt-10 ">
                 <div className="flex-grow bg-gray-100 opacity-80 p-4 rounded-lg">
-                  {comment.content}
+                  {comments[0].content}
                 </div>
               </div>
             </div>
-          ))}
+          )}
         </div>
         <form
-          onSubmit={handleCommentSubmit}
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleCommentSubmit(newComment, replyingId);
+          }}
           className="flex items-center px-4 py-4 bg-indigo-600 rounded-lg"
         >
           <img
@@ -253,43 +254,13 @@ export default function PlaceChat({
       </div>
 
       {isModalOpen && (
-        <ChatModal onClose={closeModal}>
-          <div className="p-4">
-            <h2 className="text-2xl mb-4"></h2>
-            <div className="overflow-y-auto max-h-[60vh]">
-              {comments.map((comment) => (
-                <div key={comment.id}>
-                  <div className="flex items-center mt-12">
-                    <div className="flex-grow bg-gray-100 p-2 rounded-lg">
-                      {comment.content}
-                    </div>
-                    <button
-                      className="ml-2"
-                      onClick={() => handleReply(comment.id)}
-                    >
-                      <img
-                        src="/assets/Reply.svg"
-                        alt="Reply"
-                        className="w-8 h-8 hover:cursor-pointer"
-                      />
-                    </button>
-                  </div>
-                  {comment.replies && comment.replies.length > 0 && (
-                    <div className="ml-8 mt-4">
-                      {comment.replies.map((reply) => (
-                        <div key={reply.id} className="flex items-center mt-4">
-                          <div className="flex-grow bg-gray-200 p-2 rounded-lg">
-                            {reply.content}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </ChatModal>
+        <ChatModal
+          onClose={closeModal}
+          comments={comments}
+          onCommentSubmit={handleCommentSubmit}
+          onReply={handleReply}
+          replyingId={replyingId}
+        />
       )}
     </div>
   );
