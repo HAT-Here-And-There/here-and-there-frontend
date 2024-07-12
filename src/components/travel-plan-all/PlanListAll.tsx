@@ -10,13 +10,29 @@ export default function PlanListALL() {
   const [places, setPlaces] = useState<SelectPlacePlace[]>([]);
 
   useEffect(() => {
-    if (selectedPlace) {
-      fetchChatRoomData(selectedPlace.id).then(setChatRoomData).catch(console.error);
-    }
+    const loadChatRoomData = async () => {
+      if (selectedPlace) {
+        try {
+          const data = await fetchChatRoomData(selectedPlace.id);
+          setChatRoomData(data);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+    loadChatRoomData();
   }, [selectedPlace]);
 
   useEffect(() => {
-    fetchSavedPlaces().then(setPlaces).catch(console.error);
+    const loadSavedPlaces = async () => {
+      try {
+        const data = await fetchSavedPlaces();
+        setPlaces(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    loadSavedPlaces();
   }, []);
 
   const handlePlaceClick = (placeId: string) => {
@@ -37,9 +53,9 @@ export default function PlanListALL() {
   };
 
   return (
-    <main className="flex h-[calc(100vh-100px)]"> 
+    <main className="flex h-[calc(100vh-160px)]"> 
       <div className="flex w-full h-full overflow-y-scroll">
-        <div className="w-1/3 h-full  flex-grow-0">
+        <div className="w-1/3 h-full flex-grow-0">
           <BookmarkedPlaceList 
             onPlaceClick={handlePlaceClick} 
             places={places}
@@ -59,3 +75,4 @@ export default function PlanListALL() {
     </main>
   );
 }
+

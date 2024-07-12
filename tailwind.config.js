@@ -18,6 +18,7 @@ export default {
         bookmarkRed: '#FF8577',
         backgroundLightGray: '#F7F8F9',
         borderLightGray: '#d9d9d9',
+        chatModalPurple: '#9DA7FF',
       },
       height: {
         travelListSection: 'calc(100% - 160px)',
