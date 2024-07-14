@@ -25,12 +25,15 @@ export default function ChatRoomCard({
   }, [comments]);
 
   useEffect(() => {
-    const sock = new SockJS(`${import.meta.env.VITE_BACKEND_DOMAIN}/chat/place/`, false, {
-      server: placeId,
-    });
+    const sock = new SockJS(
+      `${import.meta.env.VITE_BACKEND_DOMAIN}/chat/place/`,
+      false,
+      {
+        server: placeId,
+      }
+    );
 
     sock.onopen = async () => {
-      // console.log('connection opened!');
       setFrontSocket(sock);
     };
 
@@ -76,7 +79,7 @@ export default function ChatRoomCard({
     };
 
     sock.onclose = () => {
-      // console.log('disconnected!');
+      console.log('disconnected!');
       setFrontSocket(null);
     };
 
@@ -108,7 +111,6 @@ export default function ChatRoomCard({
         ? {
             userId: 1,
             content: newComment,
-            // originChatId: '6652f868bf7bec59262e42e9',
           }
         : {
             userId: 1,
@@ -179,7 +181,7 @@ export default function ChatRoomCard({
         >
           <div className="w-full flex justify-between gap-x-2 items-center">
             <input
-              ref={commentInputRef} // Ref 추가
+              ref={commentInputRef}
               id="comment"
               type="text"
               value={newComment}

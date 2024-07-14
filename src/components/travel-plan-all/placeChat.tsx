@@ -8,10 +8,7 @@ import {
 import { fetchSavedPlaces } from '@utils/fetchFunctions';
 import ChatModal from '@components/travel-plan-all/chatModal';
 
-export default function PlaceChat({
-  place,
-  chatRoomData = null,
-}: PlaceChatProps) {
+export default function PlaceChat({ place }: PlaceChatProps) {
   const [newComment, setNewComment] = useState<string>('');
   const [frontSocket, setFrontSocket] = useState<WebSocket | null>(null);
   const [comments, setComments] = useState<chatProps[]>([]);
