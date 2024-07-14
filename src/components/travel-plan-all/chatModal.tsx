@@ -65,7 +65,7 @@ const ChatModal = ({
                 </button>
               </div>
               {comment.replies && comment.replies.length > 0 && (
-                <div className="ml-8 mt-4">
+                <div className="ml-8 my-3">
                   {comment.replies.map((reply) => (
                     <div key={reply.id} className="flex items-center mt-4">
                       <img
