@@ -1,53 +1,83 @@
 // 캘린더는 시작일, 종료일 상태와 이를 바꾸는 함수를 받고, 백엔드로 보낼 계획명도 전달은 받아야 한다
 import Calendar from 'react-calendar';
 // import 'react-calendar/dist/Calendar.css';
-import { useState, useReducer } from 'react';
+import { useReducer } from 'react';
 import { useAppDispatch } from '@context/store';
 import {
   changePlanName,
   changeStartDate,
   changeEndDate,
 } from '@context/slices/travel-plan-slice';
-import { travelDates } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
-import { calendarInitialState } from '@context/calendarInitialState';
+import {
+  calendarInitialState,
+  calendarReducerFn,
+} from '@context/calendarInitialState';
+import { isEarlierDate } from '@utils/date';
 
 export default function TravelCalendar({ planName }: { planName: string }) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [dates, setDates] = useState<travelDates>({
-    startDate: null,
-    endDate: null,
-  });
+  // const [dates, setDates] = useState<travelDates>({
+  //   startDate: null,
+  //   endDate: null,
+  // });
 
-  const onDateChange = (value: Date) => {
-    console.log(typeof value);
-    const { startDate, endDate } = dates;
+  const [dateState, dateDispatch] = useReducer(
+    calendarReducerFn,
+    calendarInitialState
+  );
 
-    if (!startDate || (startDate && endDate)) {
-      // start가 없거나, 둘다 차있으면 새로 고르는걸 start로, 나머지는 null로
-      setDates({ startDate: value, endDate: null });
-    } else if (startDate && !endDate) {
-      const newEndDate = value;
-      const diffInDays =
-        (+newEndDate - +new Date(startDate)) / (1000 * 60 * 60 * 24);
+  // const onDateChange = (value: Date) => {
+  //   console.log(typeof value);
+  //   const { startDate, endDate } = dates;
 
-      if (diffInDays < 0) {
-        alert('종료일은 시작일보다 나중이어야 합니다!');
-        return;
+  //   if (!startDate || (startDate && endDate)) {
+  //     // start가 없거나, 둘다 차있으면 새로 고르는걸 start로, 나머지는 null로
+  //     setDates({ startDate: value, endDate: null });
+  //   } else if (startDate && !endDate) {
+  //     const newEndDate = value;
+  //     const diffInDays =
+  //       (+newEndDate - +new Date(startDate)) / (1000 * 60 * 60 * 24);
+
+  //     if (diffInDays < 0) {
+  //       alert('종료일은 시작일보다 나중이어야 합니다!');
+  //       return;
+  //     }
+
+  //     if (diffInDays > 5) {
+  //       alert('시작일과 종료일의 차이는 최대 5일이어야 합니다!');
+  //       return;
+  //     } else {
+  //       setDates({ startDate, endDate: newEndDate });
+  //     }
+  //   }
+  // };
+
+  const onDateClick = (incomingDate: Date) => {
+    if (dateState.startDate === null && dateState.endDate === null) {
+      dateDispatch({ type: 'noPreviousData', incomingDate });
+    } else if (dateState.startDate !== null && dateState.endDate === null) {
+      if (isEarlierDate(incomingDate, dateState.startDate) === 1) {
+        dateDispatch({
+          type: 'isPrevStartDayAndNotAfterEndDay',
+          incomingDate,
+        });
+      } else if (isEarlierDate(incomingDate, dateState.startDate) === 3) {
+        dateDispatch({
+          type: 'isPrevStartDayAndAfterEndDay',
+          incomingDate,
+        });
       }
-
-      if (diffInDays > 5) {
-        alert('시작일과 종료일의 차이는 최대 5일이어야 합니다!');
-        return;
-      } else {
-        setDates({ startDate, endDate: newEndDate });
-      }
+    } else {
+      dateDispatch({ type: 'isPrevStartDayAndIsPrevEndDay', incomingDate });
     }
   };
 
+  // console.log(dateState);
+
   const tileClassName = ({ date, view }: { date: Date; view: string }) => {
-    const { startDate, endDate } = dates;
+    const { startDate, endDate } = dateState;
 
     if (view === 'month') {
       if (startDate && date.getTime() === new Date(startDate).getTime()) {
@@ -72,12 +102,11 @@ export default function TravelCalendar({ planName }: { planName: string }) {
     return null;
   };
 
-  console.log(dates);
   function handleClickCompletButton() {
     dispatch(changePlanName(planName));
-    dispatch(changeStartDate(dates.startDate));
-    dispatch(changeEndDate(dates.endDate));
-    navigate(`/travel-plan/${planName}`);
+    dispatch(changeStartDate(dateState.startDate));
+    dispatch(changeEndDate(dateState.endDate));
+    navigate(`/travel-plan-all`);
   }
 
   return (
@@ -85,8 +114,8 @@ export default function TravelCalendar({ planName }: { planName: string }) {
       <p className="text-3xl font-main">여행의 날짜를 알려주세요!</p>
       <Calendar
         className="react-calendar__navigation"
-        onClickDay={onDateChange}
-        // tileClassName={tileClassName}
+        onClickDay={onDateClick}
+        tileClassName={tileClassName}
       />
       <div id="finish-button" className="w-[80%] flex justify-end items-center">
         <button

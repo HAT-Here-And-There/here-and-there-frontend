@@ -6,7 +6,12 @@ export const calendarInitialState: travelDates = {
 };
 
 interface actionType {
-  type: string;
+  type:
+    | 'noPreviousData'
+    | 'isPrevStartDayAndAfterEndDay'
+    | 'isPrevStartDayAndNotAfterEndDay'
+    | 'isPrevStartDayAndIsPrevEndDay'
+    | 'isPrevStartDayAndIsPrevEndDay';
   incomingDate: Date;
 }
 
