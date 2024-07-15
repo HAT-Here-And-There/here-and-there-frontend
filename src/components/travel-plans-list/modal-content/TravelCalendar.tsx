@@ -1,7 +1,7 @@
 // 캘린더는 시작일, 종료일 상태와 이를 바꾸는 함수를 받고, 백엔드로 보낼 계획명도 전달은 받아야 한다
 import Calendar from 'react-calendar';
 // import 'react-calendar/dist/Calendar.css';
-import { useState } from 'react';
+import { useState, useReducer } from 'react';
 import { useAppDispatch } from '@context/store';
 import {
   changePlanName,
@@ -10,6 +10,7 @@ import {
 } from '@context/slices/travel-plan-slice';
 import { travelDates } from '@_types/type';
 import { useNavigate } from 'react-router-dom';
+import { calendarInitialState } from '@context/calendarInitialState';
 
 export default function TravelCalendar({ planName }: { planName: string }) {
   const dispatch = useAppDispatch();
@@ -18,7 +19,6 @@ export default function TravelCalendar({ planName }: { planName: string }) {
     startDate: null,
     endDate: null,
   });
-  console.log(planName);
 
   const onDateChange = (value: Date) => {
     console.log(typeof value);
@@ -81,12 +81,12 @@ export default function TravelCalendar({ planName }: { planName: string }) {
   }
 
   return (
-    <div className="w-[80%] h-[80%] bg-white rounded-2xl flex flex-col justify-start items-center pt-[50px] gap-y-3">
+    <div className="w-[80%] h-[80%] bg-white rounded-2xl flex flex-col justify-start items-center pt-[56px] gap-y-3">
       <p className="text-3xl font-main">여행의 날짜를 알려주세요!</p>
       <Calendar
         className="react-calendar__navigation"
         onClickDay={onDateChange}
-        tileClassName={tileClassName}
+        // tileClassName={tileClassName}
       />
       <div id="finish-button" className="w-[80%] flex justify-end items-center">
         <button
