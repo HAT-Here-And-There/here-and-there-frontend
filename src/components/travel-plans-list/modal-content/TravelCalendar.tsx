@@ -18,41 +18,11 @@ import { isEarlierDate } from '@utils/date';
 export default function TravelCalendar({ planName }: { planName: string }) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  // const [dates, setDates] = useState<travelDates>({
-  //   startDate: null,
-  //   endDate: null,
-  // });
 
   const [dateState, dateDispatch] = useReducer(
     calendarReducerFn,
     calendarInitialState
   );
-
-  // const onDateChange = (value: Date) => {
-  //   console.log(typeof value);
-  //   const { startDate, endDate } = dates;
-
-  //   if (!startDate || (startDate && endDate)) {
-  //     // start가 없거나, 둘다 차있으면 새로 고르는걸 start로, 나머지는 null로
-  //     setDates({ startDate: value, endDate: null });
-  //   } else if (startDate && !endDate) {
-  //     const newEndDate = value;
-  //     const diffInDays =
-  //       (+newEndDate - +new Date(startDate)) / (1000 * 60 * 60 * 24);
-
-  //     if (diffInDays < 0) {
-  //       alert('종료일은 시작일보다 나중이어야 합니다!');
-  //       return;
-  //     }
-
-  //     if (diffInDays > 5) {
-  //       alert('시작일과 종료일의 차이는 최대 5일이어야 합니다!');
-  //       return;
-  //     } else {
-  //       setDates({ startDate, endDate: newEndDate });
-  //     }
-  //   }
-  // };
 
   const onDateClick = (incomingDate: Date) => {
     if (dateState.startDate === null && dateState.endDate === null) {
@@ -73,8 +43,6 @@ export default function TravelCalendar({ planName }: { planName: string }) {
       dateDispatch({ type: 'isPrevStartDayAndIsPrevEndDay', incomingDate });
     }
   };
-
-  // console.log(dateState);
 
   const tileClassName = ({ date, view }: { date: Date; view: string }) => {
     const { startDate, endDate } = dateState;
@@ -103,10 +71,14 @@ export default function TravelCalendar({ planName }: { planName: string }) {
   };
 
   function handleClickCompletButton() {
-    dispatch(changePlanName(planName));
-    dispatch(changeStartDate(dateState.startDate));
-    dispatch(changeEndDate(dateState.endDate));
-    navigate(`/travel-plan-all`);
+    if (dateState.startDate && dateState.endDate) {
+      dispatch(changePlanName(planName));
+      dispatch(changeStartDate(dateState.startDate.toDateString()));
+      dispatch(changeEndDate(dateState.endDate.toDateString()));
+      navigate(`/travel-plan-all`);
+    }
+
+    return;
   }
 
   return (

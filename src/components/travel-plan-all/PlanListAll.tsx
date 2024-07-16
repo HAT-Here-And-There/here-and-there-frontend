@@ -1,13 +1,39 @@
 import { useState, useEffect } from 'react';
-import { ChatRoomData, SelectPlacePlace } from '@_types/type';
+import { ChatRoomData } from '@_types/type';
 import BookmarkedPlaceList from './bookmarkedPlaceList';
 import PlaceChat from './placeChat';
 import { fetchSavedPlaces, fetchChatRoomData } from '@utils/fetchFunctions';
+import { useAppSelector } from '@context/store';
+import { getDateDiff } from '@utils/date';
+
+interface planListAllPlaceItem {
+  id: string;
+  name: string;
+  imageUrl: string;
+}
 
 export default function PlanListALL() {
-  const [selectedPlace, setSelectedPlace] = useState<SelectPlacePlace | null>(null);
+  const [selectedPlace, setSelectedPlace] =
+    useState<planListAllPlaceItem | null>(null);
   const [chatRoomData, setChatRoomData] = useState<ChatRoomData | null>(null);
-  const [places, setPlaces] = useState<SelectPlacePlace[]>([]);
+  // 각 차수를 모두 상태로 관리해야 하므로 2차원 배열의 형태로 관리함
+  const [places, setPlaces] = useState<planListAllPlaceItem[][]>([]);
+  const [bookMarkedPlaces, setBookMarkedPlaces] = useState<
+    planListAllPlaceItem[]
+  >([]);
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(1);
+
+  const travelPlanName = useAppSelector((state) => state.travelPlan.name);
+  console.log(travelPlanName);
+
+  const travelPlanStartDate = useAppSelector(
+    (state) => state.travelPlan.startDate
+  ) as string;
+  const travelPlanEndDate = useAppSelector(
+    (state) => state.travelPlan.endDate
+  ) as string;
+
+  const totalTravelDay = getDateDiff(travelPlanStartDate, travelPlanEndDate);
 
   useEffect(() => {
     const loadChatRoomData = async () => {
@@ -24,10 +50,16 @@ export default function PlanListALL() {
   }, [selectedPlace]);
 
   useEffect(() => {
+    setBookMarkedPlaces(places[selectedDayIndex]);
+  }, [selectedDayIndex]);
+
+  useEffect(() => {
     const loadSavedPlaces = async () => {
       try {
         const data = await fetchSavedPlaces();
-        setPlaces(data);
+        const tmpTwoDemensionLikedPlaces = new Array(totalTravelDay).fill(data);
+        setPlaces(tmpTwoDemensionLikedPlaces);
+        setBookMarkedPlaces(tmpTwoDemensionLikedPlaces[selectedDayIndex]);
       } catch (error) {
         console.error(error);
       }
@@ -35,8 +67,11 @@ export default function PlanListALL() {
     loadSavedPlaces();
   }, []);
 
-  const handlePlaceClick = (placeId: string) => {
-    const selected = places.find((place) => place.id === placeId);
+  const handlePlaceClick = (
+    placeId: string,
+    bookMarkedPlaces: planListAllPlaceItem[]
+  ) => {
+    const selected = bookMarkedPlaces.find((place) => place.id === placeId);
     setSelectedPlace(selected || null);
   };
 
@@ -52,19 +87,25 @@ export default function PlanListALL() {
     setPlaces(updatedPlaces);
   };
 
+  const handleSelectedDay = (dayIndex: number) => {
+    setSelectedDayIndex(dayIndex);
+  };
+
   return (
-    <main className="flex h-[calc(100vh-160px)]"> 
+    <main className="flex h-[calc(100vh-160px)]">
       <div className="flex w-full h-full overflow-y-scroll">
-        <div className="w-1/3 h-full flex-grow-0">
-          <BookmarkedPlaceList 
-            onPlaceClick={handlePlaceClick} 
-            places={places}
+        <div id="left-section" className="w-1/3 h-full flex-grow-0">
+          <BookmarkedPlaceList
+            totalTravelDay={totalTravelDay}
+            onPlaceClick={handlePlaceClick}
+            handleSelectedDay={handleSelectedDay}
+            places={bookMarkedPlaces}
             onMoveUp={(index) => movePlace(index, index - 1)}
             onMoveDown={(index) => movePlace(index, index + 1)}
             onDelete={deletePlace}
           />
         </div>
-        <div className="w-2/3 h-full flex-grow">
+        <div id="right-secton" className="w-2/3 h-full flex-grow">
           {selectedPlace ? (
             <PlaceChat chatRoomData={chatRoomData} place={selectedPlace} />
           ) : (
@@ -75,4 +116,3 @@ export default function PlanListALL() {
     </main>
   );
 }
-
