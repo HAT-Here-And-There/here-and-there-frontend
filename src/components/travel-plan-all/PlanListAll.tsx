@@ -50,6 +50,10 @@ export default function PlanListALL() {
   }, [selectedPlace]);
 
   useEffect(() => {
+    setBookMarkedPlaces(places[selectedDayIndex]);
+  }, [selectedDayIndex]);
+
+  useEffect(() => {
     const loadSavedPlaces = async () => {
       try {
         const data = await fetchSavedPlaces();
