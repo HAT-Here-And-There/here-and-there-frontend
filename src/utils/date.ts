@@ -8,3 +8,14 @@ export const isEarlierDate = (firstDate: Date, secondDate: Date): number => {
     return 3;
   }
 };
+
+export const getDateDiff = (
+  firstDate: string | Date,
+  secondDate: string | Date
+): number => {
+  return (
+    Math.abs(new Date(firstDate).getTime() - new Date(secondDate).getTime()) /
+      (1000 * 60 * 60 * 24) +
+    1
+  );
+};
