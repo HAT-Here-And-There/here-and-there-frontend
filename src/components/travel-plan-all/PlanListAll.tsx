@@ -5,7 +5,9 @@ import PlaceChat from './placeChat';
 import { fetchSavedPlaces, fetchChatRoomData } from '@utils/fetchFunctions';
 
 export default function PlanListALL() {
-  const [selectedPlace, setSelectedPlace] = useState<SelectPlacePlace | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<SelectPlacePlace | null>(
+    null
+  );
   const [chatRoomData, setChatRoomData] = useState<ChatRoomData | null>(null);
   const [places, setPlaces] = useState<SelectPlacePlace[]>([]);
 
@@ -53,18 +55,18 @@ export default function PlanListALL() {
   };
 
   return (
-    <main className="flex h-[calc(100vh-160px)]"> 
+    <main className="flex h-[calc(100vh-160px)]">
       <div className="flex w-full h-full overflow-y-scroll">
-        <div className="w-1/3 h-full flex-grow-0">
-          <BookmarkedPlaceList 
-            onPlaceClick={handlePlaceClick} 
+        <div id="left-section" className="w-1/3 h-full flex-grow-0">
+          <BookmarkedPlaceList
+            onPlaceClick={handlePlaceClick}
             places={places}
             onMoveUp={(index) => movePlace(index, index - 1)}
             onMoveDown={(index) => movePlace(index, index + 1)}
             onDelete={deletePlace}
           />
         </div>
-        <div className="w-2/3 h-full flex-grow">
+        <div id="right-secton" className="w-2/3 h-full flex-grow">
           {selectedPlace ? (
             <PlaceChat chatRoomData={chatRoomData} place={selectedPlace} />
           ) : (
@@ -75,4 +77,3 @@ export default function PlanListALL() {
     </main>
   );
 }
-
