@@ -71,10 +71,14 @@ export default function TravelCalendar({ planName }: { planName: string }) {
   };
 
   function handleClickCompletButton() {
-    dispatch(changePlanName(planName));
-    dispatch(changeStartDate(dateState.startDate));
-    dispatch(changeEndDate(dateState.endDate));
-    navigate(`/travel-plan-all`);
+    if (dateState.startDate && dateState.endDate) {
+      dispatch(changePlanName(planName));
+      dispatch(changeStartDate(dateState.startDate.toDateString()));
+      dispatch(changeEndDate(dateState.endDate.toDateString()));
+      navigate(`/travel-plan-all`);
+    }
+
+    return;
   }
 
   return (

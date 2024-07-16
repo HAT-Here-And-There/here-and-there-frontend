@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { travelDates } from '@_types/type';
 
-const initialTravelPlanState: travelDates & { name: string | null } = {
+interface travelPlanStateProps {
+  name: string | null;
+  startDate: string | null;
+  endDate: string | null;
+}
+
+const initialTravelPlanState: travelPlanStateProps = {
   name: null,
   startDate: null,
   endDate: null,
@@ -14,10 +19,10 @@ const travelPlanSlice = createSlice({
     changePlanName: (state, action: PayloadAction<string | null>) => {
       state.name = action.payload;
     },
-    changeStartDate: (state, action: PayloadAction<Date | null>) => {
+    changeStartDate: (state, action: PayloadAction<string | null>) => {
       state.startDate = action.payload;
     },
-    changeEndDate: (state, action: PayloadAction<Date | null>) => {
+    changeEndDate: (state, action: PayloadAction<string | null>) => {
       state.endDate = action.payload;
     },
   },
