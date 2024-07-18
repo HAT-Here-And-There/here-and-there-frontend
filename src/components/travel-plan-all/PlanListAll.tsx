@@ -5,6 +5,7 @@ import PlaceChat from './placeChat';
 import { fetchSavedPlaces, fetchChatRoomData } from '@utils/fetchFunctions';
 import { useAppSelector } from '@context/store';
 import { getDateDiff } from '@utils/date';
+import PlanAllButton from './PlanAllButton';
 
 interface planListAllPlaceItem {
   id: string;
@@ -12,11 +13,10 @@ interface planListAllPlaceItem {
   imageUrl: string;
 }
 
-export default function PlanListALL() {
+export default function PlanListAll() {
   const [selectedPlace, setSelectedPlace] =
     useState<planListAllPlaceItem | null>(null);
   const [chatRoomData, setChatRoomData] = useState<ChatRoomData | null>(null);
-  // 각 차수를 모두 상태로 관리해야 하므로 2차원 배열의 형태로 관리함
   const [places, setPlaces] = useState<planListAllPlaceItem[][]>([]);
   const [bookMarkedPlaces, setBookMarkedPlaces] = useState<
     planListAllPlaceItem[]
@@ -50,14 +50,14 @@ export default function PlanListALL() {
   }, [selectedPlace]);
 
   useEffect(() => {
-    setBookMarkedPlaces(places[selectedDayIndex]);
-  }, [selectedDayIndex]);
+    setBookMarkedPlaces(places[selectedDayIndex] || []);
+  }, [selectedDayIndex, places]);
 
   useEffect(() => {
     const loadSavedPlaces = async () => {
       try {
         const data = await fetchSavedPlaces();
-        const tmpTwoDemensionLikedPlaces = new Array(totalTravelDay).fill(data);
+        const tmpTwoDemensionLikedPlaces = Array.from({ length: totalTravelDay }, () => data);
         setPlaces(tmpTwoDemensionLikedPlaces);
         setBookMarkedPlaces(tmpTwoDemensionLikedPlaces[selectedDayIndex]);
       } catch (error) {
@@ -77,24 +77,37 @@ export default function PlanListALL() {
 
   const movePlace = (fromIndex: number, toIndex: number) => {
     const updatedPlaces = [...places];
-    const [movedPlace] = updatedPlaces.splice(fromIndex, 1);
-    updatedPlaces.splice(toIndex, 0, movedPlace);
+    const dayPlaces = [...updatedPlaces[selectedDayIndex]];
+    const [movedPlace] = dayPlaces.splice(fromIndex, 1);
+    dayPlaces.splice(toIndex, 0, movedPlace);
+    updatedPlaces[selectedDayIndex] = dayPlaces;
     setPlaces(updatedPlaces);
+    setBookMarkedPlaces(dayPlaces);
   };
 
   const deletePlace = (index: number) => {
-    const updatedPlaces = places.filter((_, i) => i !== index);
+    const updatedPlaces = [...places];
+    const dayPlaces = [...updatedPlaces[selectedDayIndex]];
+    dayPlaces.splice(index, 1);
+    updatedPlaces[selectedDayIndex] = dayPlaces;
     setPlaces(updatedPlaces);
+    setBookMarkedPlaces(dayPlaces);
   };
 
   const handleSelectedDay = (dayIndex: number) => {
     setSelectedDayIndex(dayIndex);
   };
 
+  const handleAllPlanClick = () => {
+    // 전체일정 보러가기 클릭 시 동작하는 함수
+    console.log('전체일정 보러가기 클릭됨');
+    // 전체일정 페이지로 이동하는 로직 추가할 예정.
+  };
+
   return (
     <main className="flex h-[calc(100vh-160px)]">
       <div className="flex w-full h-full overflow-y-scroll">
-        <div id="left-section" className="w-1/3 h-full flex-grow-0">
+        <div id="left-section" className="w-[35%] h-full flex-grow-0 relative">
           <BookmarkedPlaceList
             totalTravelDay={totalTravelDay}
             onPlaceClick={handlePlaceClick}
@@ -104,6 +117,9 @@ export default function PlanListALL() {
             onMoveDown={(index) => movePlace(index, index + 1)}
             onDelete={deletePlace}
           />
+          <div className="absolute bottom-10 left-1.5 w-[66px] flex justify-center">
+            <PlanAllButton onClick={handleAllPlanClick} />
+          </div>
         </div>
         <div id="right-secton" className="w-2/3 h-full flex-grow">
           {selectedPlace ? (
