@@ -21,7 +21,7 @@ export default function PlanListAll() {
   const [bookMarkedPlaces, setBookMarkedPlaces] = useState<
     planListAllPlaceItem[]
   >([]);
-  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(1);
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
   const [travelPlanName, setTravelPlanName] = useState<string | null>(null);
   const [travelPlanStartDate, setTravelPlanStartDate] = useState<string | null>(
     null
@@ -29,17 +29,6 @@ export default function PlanListAll() {
   const [travelPlanEndDate, setTravelPlanEndDate] = useState<string | null>(
     null
   );
-  const navigate = useNavigate();
-
-  // const travelPlanName = useAppSelector((state) => state.travelPlan.name);
-  // console.log(travelPlanName);
-
-  // const travelPlanStartDate = useAppSelector(
-  //   (state) => state.travelPlan.startDate
-  // ) as string;
-  // const travelPlanEndDate = useAppSelector(
-  //   (state) => state.travelPlan.endDate
-  // ) as string;
 
   useEffect(() => {
     const localStorageTravelPlanName = localStorage.getItem('travelPlanName');
@@ -47,14 +36,6 @@ export default function PlanListAll() {
       'travelPlanStartDate'
     );
     const localStorageTravelEndTime = localStorage.getItem('travelPlanEndDate');
-
-    if (
-      !localStorageTravelPlanName ||
-      !localStorageTravelStartTime ||
-      !localStorageTravelEndTime
-    ) {
-      navigate('/');
-    }
 
     setTravelPlanName(localStorageTravelPlanName);
     setTravelPlanStartDate(localStorageTravelStartTime);
@@ -81,7 +62,7 @@ export default function PlanListAll() {
   }, [selectedPlace]);
 
   useEffect(() => {
-    setBookMarkedPlaces(places[selectedDayIndex] || []);
+    setBookMarkedPlaces(places[selectedDayIndex]);
   }, [selectedDayIndex, places]);
 
   useEffect(() => {
@@ -134,7 +115,7 @@ export default function PlanListAll() {
 
   const handleAllPlanClick = () => {
     // 전체일정 보러가기 클릭 시 동작하는 함수
-    console.log('전체일정 보러가기 클릭됨');
+    // console.log('전체일정 보러가기 클릭됨');
     // 전체일정 페이지로 이동하는 로직 추가할 예정.
   };
 
@@ -151,9 +132,9 @@ export default function PlanListAll() {
             onMoveDown={(index) => movePlace(index, index + 1)}
             onDelete={deletePlace}
           />
-          <div className="absolute bottom-10 left-1.5 w-[66px] flex justify-center">
+          {/* <div className="absolute bottom-10 left-1.5 w-[66px] flex justify-center">
             <PlanAllButton onClick={handleAllPlanClick} />
-          </div>
+          </div> */}
         </div>
         <div id="right-secton" className="w-2/3 h-full flex-grow">
           {selectedPlace ? (

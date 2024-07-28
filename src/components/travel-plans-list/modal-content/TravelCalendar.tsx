@@ -73,7 +73,7 @@ export default function TravelCalendar({ planName }: { planName: string }) {
         'travelPlanEndDate',
         dateState.endDate.toDateString()
       );
-      navigate(`/travel-plan-all`);
+      navigate('/travel-plan-all');
     }
 
     return;
