@@ -3,9 +3,9 @@ import { ChatRoomData } from '@_types/type';
 import BookmarkedPlaceList from './bookmarkedPlaceList';
 import PlaceChat from './placeChat';
 import { fetchSavedPlaces, fetchChatRoomData } from '@utils/fetchFunctions';
-import { useAppSelector } from '@context/store';
 import { getDateDiff } from '@utils/date';
 import PlanAllButton from './PlanAllButton';
+import { useNavigate } from 'react-router-dom';
 
 interface planListAllPlaceItem {
   id: string;
@@ -22,18 +22,49 @@ export default function PlanListAll() {
     planListAllPlaceItem[]
   >([]);
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(1);
+  const [travelPlanName, setTravelPlanName] = useState<string | null>(null);
+  const [travelPlanStartDate, setTravelPlanStartDate] = useState<string | null>(
+    null
+  );
+  const [travelPlanEndDate, setTravelPlanEndDate] = useState<string | null>(
+    null
+  );
+  const navigate = useNavigate();
 
-  const travelPlanName = useAppSelector((state) => state.travelPlan.name);
-  console.log(travelPlanName);
+  // const travelPlanName = useAppSelector((state) => state.travelPlan.name);
+  // console.log(travelPlanName);
 
-  const travelPlanStartDate = useAppSelector(
-    (state) => state.travelPlan.startDate
-  ) as string;
-  const travelPlanEndDate = useAppSelector(
-    (state) => state.travelPlan.endDate
-  ) as string;
+  // const travelPlanStartDate = useAppSelector(
+  //   (state) => state.travelPlan.startDate
+  // ) as string;
+  // const travelPlanEndDate = useAppSelector(
+  //   (state) => state.travelPlan.endDate
+  // ) as string;
 
-  const totalTravelDay = getDateDiff(travelPlanStartDate, travelPlanEndDate);
+  useEffect(() => {
+    const localStorageTravelPlanName = localStorage.getItem('travelPlanName');
+    const localStorageTravelStartTime = localStorage.getItem(
+      'travelPlanStartDate'
+    );
+    const localStorageTravelEndTime = localStorage.getItem('travelPlanEndDate');
+
+    if (
+      !localStorageTravelPlanName ||
+      !localStorageTravelStartTime ||
+      !localStorageTravelEndTime
+    ) {
+      navigate('/');
+    }
+
+    setTravelPlanName(localStorageTravelPlanName);
+    setTravelPlanStartDate(localStorageTravelStartTime);
+    setTravelPlanEndDate(localStorageTravelEndTime);
+  }, []);
+
+  const totalTravelDay = getDateDiff(
+    travelPlanStartDate as string,
+    travelPlanEndDate as string
+  );
 
   useEffect(() => {
     const loadChatRoomData = async () => {
@@ -57,7 +88,10 @@ export default function PlanListAll() {
     const loadSavedPlaces = async () => {
       try {
         const data = await fetchSavedPlaces();
-        const tmpTwoDemensionLikedPlaces = Array.from({ length: totalTravelDay }, () => data);
+        const tmpTwoDemensionLikedPlaces = Array.from(
+          { length: totalTravelDay },
+          () => data
+        );
         setPlaces(tmpTwoDemensionLikedPlaces);
         setBookMarkedPlaces(tmpTwoDemensionLikedPlaces[selectedDayIndex]);
       } catch (error) {

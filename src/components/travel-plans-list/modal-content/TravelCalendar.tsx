@@ -1,13 +1,6 @@
 // 캘린더는 시작일, 종료일 상태와 이를 바꾸는 함수를 받고, 백엔드로 보낼 계획명도 전달은 받아야 한다
 import Calendar from 'react-calendar';
-// import 'react-calendar/dist/Calendar.css';
 import { useReducer } from 'react';
-import { useAppDispatch } from '@context/store';
-import {
-  changePlanName,
-  changeStartDate,
-  changeEndDate,
-} from '@context/slices/travel-plan-slice';
 import { useNavigate } from 'react-router-dom';
 import {
   calendarInitialState,
@@ -16,7 +9,6 @@ import {
 import { isEarlierDate } from '@utils/date';
 
 export default function TravelCalendar({ planName }: { planName: string }) {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [dateState, dateDispatch] = useReducer(
@@ -72,9 +64,15 @@ export default function TravelCalendar({ planName }: { planName: string }) {
 
   function handleClickCompletButton() {
     if (dateState.startDate && dateState.endDate) {
-      dispatch(changePlanName(planName));
-      dispatch(changeStartDate(dateState.startDate.toDateString()));
-      dispatch(changeEndDate(dateState.endDate.toDateString()));
+      localStorage.setItem('travelPlanName', planName);
+      localStorage.setItem(
+        'travelPlanStartDate',
+        dateState.startDate.toDateString()
+      );
+      localStorage.setItem(
+        'travelPlanEndDate',
+        dateState.endDate.toDateString()
+      );
       navigate(`/travel-plan-all`);
     }
 
