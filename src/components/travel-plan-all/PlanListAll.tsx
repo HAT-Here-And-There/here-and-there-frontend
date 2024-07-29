@@ -3,9 +3,9 @@ import { ChatRoomData } from '@_types/type';
 import BookmarkedPlaceList from './bookmarkedPlaceList';
 import PlaceChat from './placeChat';
 import { fetchSavedPlaces, fetchChatRoomData } from '@utils/fetchFunctions';
-import { useAppSelector } from '@context/store';
 import { getDateDiff } from '@utils/date';
 import PlanAllButton from './PlanAllButton';
+import { useNavigate } from 'react-router-dom';
 
 interface planListAllPlaceItem {
   id: string;
@@ -21,19 +21,31 @@ export default function PlanListAll() {
   const [bookMarkedPlaces, setBookMarkedPlaces] = useState<
     planListAllPlaceItem[]
   >([]);
-  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(1);
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
+  const [travelPlanName, setTravelPlanName] = useState<string | null>(null);
+  const [travelPlanStartDate, setTravelPlanStartDate] = useState<string | null>(
+    null
+  );
+  const [travelPlanEndDate, setTravelPlanEndDate] = useState<string | null>(
+    null
+  );
 
-  const travelPlanName = useAppSelector((state) => state.travelPlan.name);
-  console.log(travelPlanName);
+  useEffect(() => {
+    const localStorageTravelPlanName = localStorage.getItem('travelPlanName');
+    const localStorageTravelStartTime = localStorage.getItem(
+      'travelPlanStartDate'
+    );
+    const localStorageTravelEndTime = localStorage.getItem('travelPlanEndDate');
 
-  const travelPlanStartDate = useAppSelector(
-    (state) => state.travelPlan.startDate
-  ) as string;
-  const travelPlanEndDate = useAppSelector(
-    (state) => state.travelPlan.endDate
-  ) as string;
+    setTravelPlanName(localStorageTravelPlanName);
+    setTravelPlanStartDate(localStorageTravelStartTime);
+    setTravelPlanEndDate(localStorageTravelEndTime);
+  }, []);
 
-  const totalTravelDay = getDateDiff(travelPlanStartDate, travelPlanEndDate);
+  const totalTravelDay = getDateDiff(
+    travelPlanStartDate as string,
+    travelPlanEndDate as string
+  );
 
   useEffect(() => {
     const loadChatRoomData = async () => {
@@ -50,14 +62,17 @@ export default function PlanListAll() {
   }, [selectedPlace]);
 
   useEffect(() => {
-    setBookMarkedPlaces(places[selectedDayIndex] || []);
+    setBookMarkedPlaces(places[selectedDayIndex]);
   }, [selectedDayIndex, places]);
 
   useEffect(() => {
     const loadSavedPlaces = async () => {
       try {
         const data = await fetchSavedPlaces();
-        const tmpTwoDemensionLikedPlaces = Array.from({ length: totalTravelDay }, () => data);
+        const tmpTwoDemensionLikedPlaces = Array.from(
+          { length: totalTravelDay },
+          () => data
+        );
         setPlaces(tmpTwoDemensionLikedPlaces);
         setBookMarkedPlaces(tmpTwoDemensionLikedPlaces[selectedDayIndex]);
       } catch (error) {
@@ -100,7 +115,7 @@ export default function PlanListAll() {
 
   const handleAllPlanClick = () => {
     // 전체일정 보러가기 클릭 시 동작하는 함수
-    console.log('전체일정 보러가기 클릭됨');
+    // console.log('전체일정 보러가기 클릭됨');
     // 전체일정 페이지로 이동하는 로직 추가할 예정.
   };
 
@@ -117,9 +132,9 @@ export default function PlanListAll() {
             onMoveDown={(index) => movePlace(index, index + 1)}
             onDelete={deletePlace}
           />
-          <div className="absolute bottom-10 left-1.5 w-[66px] flex justify-center">
+          {/* <div className="absolute bottom-10 left-1.5 w-[66px] flex justify-center">
             <PlanAllButton onClick={handleAllPlanClick} />
-          </div>
+          </div> */}
         </div>
         <div id="right-secton" className="w-2/3 h-full flex-grow">
           {selectedPlace ? (

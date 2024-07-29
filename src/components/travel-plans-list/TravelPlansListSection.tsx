@@ -71,8 +71,6 @@ export default function TravelPlansListSection() {
     setIsModalOpen(false);
     setPlanStepState(0);
     setPlanName('');
-    // setStartDate('');
-    // setEndDate('');
   }
 
   return (
