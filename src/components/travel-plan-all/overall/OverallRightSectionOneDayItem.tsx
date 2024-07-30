@@ -19,17 +19,19 @@ export default function OverallRightSectionOneDayItem({
         <div
           key={placeListItem.id}
           id="placeListItem-container"
-          className="flex flex-col w-full h-[300px] mb-[60px]"
+          className="flex flex-col items-center w-full h-[300px] mb-[60px]"
         >
-          <div className="flex justify-between items-center">
-            <span>{placeListItem.name}</span>
+          <div className="flex w-[90%] justify-between items-center">
+            <span className="">{placeListItem.name}</span>
             {/* 위, 아래와 삭제 버튼이 위치하면 됩니다. */}
           </div>
-          <img
-            src={placeListItem.imageUrl}
-            alt="장소이미지"
-            className="w-[80%] h-[80%]"
-          />
+          <div className="w-[90%] flex ">
+            <img
+              src={placeListItem.imageUrl}
+              alt="장소이미지"
+              className="w-[80%]  rounded-xl"
+            />
+          </div>
         </div>
       ))}
     </div>

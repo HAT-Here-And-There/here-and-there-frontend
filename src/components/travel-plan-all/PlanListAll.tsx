@@ -116,7 +116,13 @@ export default function PlanListAll() {
   return (
     <main className="flex h-[calc(100vh-160px)]">
       {showDetails ? (
-        <TravelPlanDetails onBackClick={handleBackClick} places={places} />
+        <TravelPlanDetails
+          onBackClick={handleBackClick}
+          places={places}
+          travelPlanName={travelPlanName as string}
+          travelStartDate={new Date(travelPlanStartDate)}
+          travelEndDate={new Date(travelPlanEndDate)}
+        />
       ) : (
         <div className="flex w-full h-full overflow-y-scroll">
           <div

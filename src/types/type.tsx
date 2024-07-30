@@ -116,4 +116,7 @@ export interface BookmarkedPlaceListProps {
 export interface TravelPlanDetailsProps {
   onBackClick: () => void;
   places: planListAllPlaceItem[][];
+  travelPlanName: string;
+  travelStartDate: Date;
+  travelEndDate: Date;
 }
