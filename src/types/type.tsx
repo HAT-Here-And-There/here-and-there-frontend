@@ -92,8 +92,13 @@ export interface travelDates {
   endDate: Date | null;
 }
 
-
 // travel-plan-all 관련 타입
+
+export interface planListAllPlaceItem {
+  id: string;
+  name: string;
+  imageUrl: string;
+}
 
 export interface PlaceChatProps {
   place: SelectPlacePlace;
@@ -110,4 +115,5 @@ export interface BookmarkedPlaceListProps {
 
 export interface TravelPlanDetailsProps {
   onBackClick: () => void;
+  places: planListAllPlaceItem[][];
 }

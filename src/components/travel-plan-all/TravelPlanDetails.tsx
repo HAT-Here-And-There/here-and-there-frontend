@@ -1,14 +1,15 @@
 import { TravelPlanDetailsProps } from '@_types/type';
+import OverallLeftSection from './overall/OverallLeftSection';
+import OverallRightSection from './overall/OverallRightSection';
 
-
-const TravelPlanDetails: React.FC<TravelPlanDetailsProps> = ({ onBackClick }) => {
+export default function TravelPlanDetails({
+  onBackClick,
+  places,
+}: TravelPlanDetailsProps) {
   return (
-    <div>
-      <button onClick={onBackClick}>뒤로가기</button>
-      <h1>전체 일정 페이지</h1>
-      {/* 전체 일정 보여주기 */}
-    </div>
+    <>
+      <OverallLeftSection onBackClick={onBackClick} places={places} />
+      <OverallRightSection />
+    </>
   );
-};
-
-export default TravelPlanDetails;
+}

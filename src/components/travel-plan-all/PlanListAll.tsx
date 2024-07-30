@@ -6,48 +6,36 @@ import { fetchSavedPlaces, fetchChatRoomData } from '@utils/fetchFunctions';
 import { getDateDiff } from '@utils/date';
 import PlanAllButton from './PlanAllButton';
 import TravelPlanDetails from './TravelPlanDetails';
-
-interface planListAllPlaceItem {
-  id: string;
-  name: string;
-  imageUrl: string;
-}
+import { planListAllPlaceItem } from '@_types/type';
 
 export default function PlanListAll() {
+  // 우측 채팅방에 보여질 장소를 의미함
   const [selectedPlace, setSelectedPlace] =
     useState<planListAllPlaceItem | null>(null);
   const [chatRoomData, setChatRoomData] = useState<ChatRoomData | null>(null);
+  // 사용자가 저장한 장소들을 의미하며 차수에 맞게 2차원 배열로 유지함
   const [places, setPlaces] = useState<planListAllPlaceItem[][]>([]);
   const [bookMarkedPlaces, setBookMarkedPlaces] = useState<
     planListAllPlaceItem[]
   >([]);
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
-  const [travelPlanName, setTravelPlanName] = useState<string | null>(null);
-  const [travelPlanStartDate, setTravelPlanStartDate] = useState<string | null>(
-    null
+  const [travelPlanName, setTravelPlanName] = useState<string | null>(
+    localStorage.getItem('travelPlanName')
   );
-  const [travelPlanEndDate, setTravelPlanEndDate] = useState<string | null>(
-    null
+  const [travelPlanStartDate, setTravelPlanStartDate] = useState<string>(
+    localStorage.getItem('travelPlanStartDate') as string
+  );
+  const [travelPlanEndDate, setTravelPlanEndDate] = useState<string>(
+    localStorage.getItem('travelPlanEndDate') as string
   );
   const [showDetails, setShowDetails] = useState<boolean>(false);
-
-  useEffect(() => {
-    const localStorageTravelPlanName = localStorage.getItem('travelPlanName');
-    const localStorageTravelStartTime = localStorage.getItem(
-      'travelPlanStartDate'
-    );
-    const localStorageTravelEndTime = localStorage.getItem('travelPlanEndDate');
-
-    setTravelPlanName(localStorageTravelPlanName);
-    setTravelPlanStartDate(localStorageTravelStartTime);
-    setTravelPlanEndDate(localStorageTravelEndTime);
-  }, []);
 
   const totalTravelDay = getDateDiff(
     travelPlanStartDate as string,
     travelPlanEndDate as string
   );
 
+  // 특정 장소가 골라지면 설정되는 채팅방 데이터
   useEffect(() => {
     const loadChatRoomData = async () => {
       if (selectedPlace) {
@@ -70,12 +58,13 @@ export default function PlanListAll() {
     const loadSavedPlaces = async () => {
       try {
         const data = await fetchSavedPlaces();
-        const tmpTwoDemensionLikedPlaces = Array.from(
-          { length: totalTravelDay },
-          () => data
-        );
-        setPlaces(tmpTwoDemensionLikedPlaces);
-        setBookMarkedPlaces(tmpTwoDemensionLikedPlaces[selectedDayIndex]);
+        const tmpPlaces = [];
+
+        for (let i = 0; i < totalTravelDay; i++) {
+          tmpPlaces.push(data);
+        }
+        setPlaces(tmpPlaces);
+        setBookMarkedPlaces(tmpPlaces[selectedDayIndex]);
       } catch (error) {
         console.error(error);
       }
@@ -83,6 +72,7 @@ export default function PlanListAll() {
     loadSavedPlaces();
   }, []);
 
+  // 특정 장소를 고르면 bookkMarkedPlaces 상태에서 찾아서 오른쪽 채팅 화면에 띄워줌
   const handlePlaceClick = (
     placeId: string,
     bookMarkedPlaces: planListAllPlaceItem[]
@@ -91,6 +81,7 @@ export default function PlanListAll() {
     setSelectedPlace(selected || null);
   };
 
+  // 기존의 전체 places를 복사 후 1차원 배열을 고르고 시작점으로부터 하나 잘라내어 목표 인덱스에 이어붙임
   const movePlace = (fromIndex: number, toIndex: number) => {
     const updatedPlaces = [...places];
     const dayPlaces = [...updatedPlaces[selectedDayIndex]];
@@ -115,7 +106,7 @@ export default function PlanListAll() {
   };
 
   const handleAllPlanClick = () => {
-    setShowDetails(true); 
+    setShowDetails(true);
   };
 
   const handleBackClick = () => {
@@ -125,10 +116,13 @@ export default function PlanListAll() {
   return (
     <main className="flex h-[calc(100vh-160px)]">
       {showDetails ? (
-        <TravelPlanDetails onBackClick={handleBackClick} />
+        <TravelPlanDetails onBackClick={handleBackClick} places={places} />
       ) : (
         <div className="flex w-full h-full overflow-y-scroll">
-          <div id="left-section" className="w-[35%] h-full flex-grow-0 relative">
+          <div
+            id="left-section"
+            className="w-[35%] h-full flex-grow-0 relative"
+          >
             <BookmarkedPlaceList
               totalTravelDay={totalTravelDay}
               onPlaceClick={handlePlaceClick}
@@ -146,7 +140,9 @@ export default function PlanListAll() {
             {selectedPlace ? (
               <PlaceChat chatRoomData={chatRoomData} place={selectedPlace} />
             ) : (
-              <p className="text-center text-gray-500 mt-4">장소를 선택하세요.</p>
+              <p className="text-center text-gray-500 mt-4">
+                장소를 선택하세요.
+              </p>
             )}
           </div>
         </div>
