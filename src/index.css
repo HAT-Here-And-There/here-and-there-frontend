@@ -24,6 +24,15 @@
   .scroll-box::-webkit-scrollbar {
     display: none;
   }
+
+  .travel-plan-scroll-box {
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+  }
+
+  .travel-plan-scroll-box::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @layer components {

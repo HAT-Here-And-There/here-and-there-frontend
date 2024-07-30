@@ -28,7 +28,10 @@ export default function OverallLeftSection({
   }, []);
 
   return (
-    <div id="overall-left-section" className="w-[35%] bg-[#F3F5FF] flex">
+    <div
+      id="overall-left-section"
+      className="w-[35%] bg-[#F3F5FF] flex font-main"
+    >
       <div
         id="tag-area"
         className="w-[100px] flex flex-col justify-start items-end pt-[30px]"

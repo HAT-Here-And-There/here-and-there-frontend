@@ -9,7 +9,7 @@ export default function TravelPlanDetails({
   return (
     <>
       <OverallLeftSection onBackClick={onBackClick} places={places} />
-      <OverallRightSection />
+      <OverallRightSection places={places} />
     </>
   );
 }
