@@ -5,7 +5,7 @@ import PlaceChat from './placeChat';
 import { fetchSavedPlaces, fetchChatRoomData } from '@utils/fetchFunctions';
 import { getDateDiff } from '@utils/date';
 import PlanAllButton from './PlanAllButton';
-import { useNavigate } from 'react-router-dom';
+import TravelPlanDetails from './TravelPlanDetails';
 
 interface planListAllPlaceItem {
   id: string;
@@ -29,6 +29,7 @@ export default function PlanListAll() {
   const [travelPlanEndDate, setTravelPlanEndDate] = useState<string | null>(
     null
   );
+  const [showDetails, setShowDetails] = useState<boolean>(false);
 
   useEffect(() => {
     const localStorageTravelPlanName = localStorage.getItem('travelPlanName');
@@ -114,37 +115,42 @@ export default function PlanListAll() {
   };
 
   const handleAllPlanClick = () => {
-    // 전체일정 보러가기 클릭 시 동작하는 함수
-    console.log('전체일정 보러가기 클릭됨');
-    // 전체일정 페이지로 이동하는 로직 추가할 예정.
+    setShowDetails(true); 
+  };
+
+  const handleBackClick = () => {
+    setShowDetails(false);
   };
 
   return (
     <main className="flex h-[calc(100vh-160px)]">
-      <div className="flex w-full h-full overflow-y-scroll">
-        <div id="left-section" className="w-[35%] h-full flex-grow-0 relative outline">
-          <BookmarkedPlaceList
-            totalTravelDay={totalTravelDay}
-            onPlaceClick={handlePlaceClick}
-            handleSelectedDay={handleSelectedDay}
-            places={bookMarkedPlaces}
-            onMoveUp={(index) => movePlace(index, index - 1)}
-            onMoveDown={(index) => movePlace(index, index + 1)}
-            onDelete={deletePlace}
-          />
-          <div className="absolute bottom-10 w-[66px] flex justify-center">
-            <PlanAllButton onClick={handleAllPlanClick} />
+      {showDetails ? (
+        <TravelPlanDetails onBackClick={handleBackClick} />
+      ) : (
+        <div className="flex w-full h-full overflow-y-scroll">
+          <div id="left-section" className="w-[35%] h-full flex-grow-0 relative">
+            <BookmarkedPlaceList
+              totalTravelDay={totalTravelDay}
+              onPlaceClick={handlePlaceClick}
+              handleSelectedDay={handleSelectedDay}
+              places={bookMarkedPlaces}
+              onMoveUp={(index) => movePlace(index, index - 1)}
+              onMoveDown={(index) => movePlace(index, index + 1)}
+              onDelete={deletePlace}
+            />
+            <div className="absolute bottom-10 w-[66px] flex justify-center">
+              <PlanAllButton onClick={handleAllPlanClick} />
+            </div>
+          </div>
+          <div id="right-secton" className="w-2/3 h-full flex-grow">
+            {selectedPlace ? (
+              <PlaceChat chatRoomData={chatRoomData} place={selectedPlace} />
+            ) : (
+              <p className="text-center text-gray-500 mt-4">장소를 선택하세요.</p>
+            )}
           </div>
         </div>
-        <div id="right-secton" className="w-2/3 h-full flex-grow">
-          {selectedPlace ? (
-            <PlaceChat chatRoomData={chatRoomData} place={selectedPlace} />
-          ) : (
-            <p className="text-center text-gray-500 mt-4">장소를 선택하세요.</p>
-          )}
-        </div>
-      </div>
+      )}
     </main>
   );
 }
-

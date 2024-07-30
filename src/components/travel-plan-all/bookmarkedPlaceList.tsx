@@ -29,8 +29,8 @@ export default function BookmarkedPlaceList({
   handleSelectedDay,
 }: BookmarkedPlaceListProps) {
   return (
-    <div className=" h-full w-full flex">
-      <div id="day-selectionarea" className="!w-[60px] h-full bg-gray-200">
+    <div className="h-full w-full flex">
+      <div id="day-selectionarea" className="w-[66px] h-full bg-gray-200">
         {[...Array(totalTravelDay).keys()]
           .map((i) => i + 1)
           .map((dayIndex) => (
@@ -39,13 +39,20 @@ export default function BookmarkedPlaceList({
             </div>
           ))}
       </div>
-      <div className="bg-white grow flex flex-col items-center scroll-box">
+      <div
+        className="bg-white grow flex flex-col items-center scroll-box border"
+        style={{
+          borderRight: '1px solid #000',
+          borderBottom: '5px solid #000',
+          borderLeft: '1px solid #000',
+        }}
+      >
         {places &&
           places.map((place, index) => {
             return (
               <div
                 key={place.id}
-                className="flex flex-col rounded-lg bg-white hover:cursor-pointer mb-10"
+                className="flex flex-col rounded-lg bg-white hover:cursor-pointer my-10"
               >
                 <div className="flex justify-between items-center">
                   <h2
@@ -81,7 +88,7 @@ export default function BookmarkedPlaceList({
                 <img
                   src={place.imageUrl}
                   alt="장소 사진"
-                  className="w-full !h-[150px] object-cover"
+                  className="w-[305px] h-[150px] object-cover"
                   onClick={() => onPlaceClick(place.id, places)}
                 />
               </div>

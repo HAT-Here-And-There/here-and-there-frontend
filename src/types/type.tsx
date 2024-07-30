@@ -108,3 +108,6 @@ export interface BookmarkedPlaceListProps {
   onDelete: (index: number) => void;
 }
 
+export interface TravelPlanDetailsProps {
+  onBackClick: () => void;
+}
