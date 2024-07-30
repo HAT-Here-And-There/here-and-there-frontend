@@ -30,11 +30,18 @@ export default function BookmarkedPlaceList({
 }: BookmarkedPlaceListProps) {
   return (
     <div className="h-full w-full flex">
-      <div id="day-selectionarea" className="w-[66px] h-full bg-gray-200">
+      <div
+        id="day-selectionarea"
+        className="!w-[60px] h-ful flex flex-col items-end bg-gray-200 pt-3"
+      >
         {[...Array(totalTravelDay).keys()]
           .map((i) => i + 1)
           .map((dayIndex) => (
-            <div key={dayIndex} onClick={() => handleSelectedDay(dayIndex - 1)}>
+            <div
+              key={dayIndex}
+              onClick={() => handleSelectedDay(dayIndex - 1)}
+              className="bg-[#ffabab] mb-3 text-2 w-[90%] h-12 rounded-tl-lg rounded-bl-lg flex justify-center items-center"
+            >
               {dayIndex}일 차
             </div>
           ))}
