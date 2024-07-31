@@ -30,5 +30,5 @@ export const formatDateToYYYYMMDD = (dateString: string): string => {
   const day = String(date.getDate()).padStart(2, '0'); // 일자를 2자리로 맞추기 위해 padStart를 사용합니다.
 
   // 원하는 포맷으로 문자열을 생성
-  return `${year}.${month}.${day}`;
+  return `${year}-${month}-${day}`;
 };

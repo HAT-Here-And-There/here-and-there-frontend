@@ -1,6 +1,6 @@
 import { formatDateToYYYYMMDD } from '@utils/date';
 import { planListAllPlaceItem } from '@_types/type';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { fetchSavedPlaces } from '@utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,6 +23,8 @@ export default function OverallLeftSection({
   const [savedPlaces, setSavedPlaces] = useState<planListAllPlaceItem[]>([]);
   const navigate = useNavigate();
 
+  console.log(places);
+
   useEffect(() => {
     const loadSavedPlaces = async () => {
       try {
@@ -37,12 +39,28 @@ export default function OverallLeftSection({
 
   const handleSaveTravelPlan = async () => {
     // 백엔드 엔드포인트로 전송하고, 로컬 스토리지를 비우는 로직. 추후에 travel-plans-list 페이지로 이동
-    const sendingTravelPlanObject = {
+
+    const sendingTravelPlanObject: {
+      name: string;
+      startDate: string;
+      endDate: string;
+      dailyPlans: { dailyPlanItems: { placeId: string; memo: string }[] }[];
+    } = {
       name: travelPlanName,
-      startDate: travelStartDate.toDateString(),
-      endDate: travelEndDate.toDateString(),
-      dailyPlans: places,
+      startDate: formatDateToYYYYMMDD(travelStartDate.toDateString()),
+      endDate: formatDateToYYYYMMDD(travelEndDate.toDateString()),
+      dailyPlans: [],
     };
+
+    for (const place of places) {
+      const dailyPlanItemsArray = [];
+      for (const placeItem of place) {
+        dailyPlanItemsArray.push({ placeId: placeItem.id, memo: '' });
+      }
+
+      const pushingObect = { dailyPlanItems: dailyPlanItemsArray };
+      sendingTravelPlanObject.dailyPlans.push(pushingObect);
+    }
 
     const response = await fetch(
       `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/plan`,
