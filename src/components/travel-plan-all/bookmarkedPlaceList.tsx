@@ -32,7 +32,7 @@ export default function BookmarkedPlaceList({
     <div className="h-full w-full flex">
       <div
         id="day-selectionarea"
-        className="!w-[60px] h-ful flex flex-col items-end bg-gray-200 pt-3"
+        className="w-[65px] h-ful flex flex-col items-end bg-gray-200 pt-3"
       >
         {[...Array(totalTravelDay).keys()]
           .map((i) => i + 1)

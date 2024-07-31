@@ -19,6 +19,7 @@ export default {
         backgroundLightGray: '#F7F8F9',
         borderLightGray: '#d9d9d9',
         chatModalPurple: '#9DA7FF',
+        planListRed:'#FF7878',
       },
       height: {
         travelListSection: 'calc(100% - 160px)',

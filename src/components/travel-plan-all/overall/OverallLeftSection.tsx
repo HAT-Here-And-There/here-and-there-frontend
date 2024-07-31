@@ -1,6 +1,6 @@
 import { formatDateToYYYYMMDD } from '@utils/date';
 import { planListAllPlaceItem } from '@_types/type';
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchSavedPlaces } from '@utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,11 +19,8 @@ export default function OverallLeftSection({
   travelStartDate,
   travelEndDate,
 }: overallLeftSectionProp) {
-  // savedPlaces는 북마크 되어있는 장소들을 의미해서 여기에서 그냥 한번 더 가져온다. 추후에 리팩터링 가능
   const [savedPlaces, setSavedPlaces] = useState<planListAllPlaceItem[]>([]);
   const navigate = useNavigate();
-
-  console.log(places);
 
   useEffect(() => {
     const loadSavedPlaces = async () => {
@@ -38,29 +35,17 @@ export default function OverallLeftSection({
   }, []);
 
   const handleSaveTravelPlan = async () => {
-    // 백엔드 엔드포인트로 전송하고, 로컬 스토리지를 비우는 로직. 추후에 travel-plans-list 페이지로 이동
-
-    const sendingTravelPlanObject: {
-      name: string;
-      startDate: string;
-      endDate: string;
-      dailyPlans: { dailyPlanItems: { placeId: string; memo: string }[] }[];
-    } = {
+    const sendingTravelPlanObject = {
       name: travelPlanName,
       startDate: formatDateToYYYYMMDD(travelStartDate.toDateString()),
       endDate: formatDateToYYYYMMDD(travelEndDate.toDateString()),
-      dailyPlans: [],
+      dailyPlans: places.map((place) => ({
+        dailyPlanItems: place.map((placeItem) => ({
+          placeId: placeItem.id,
+          memo: '',
+        })),
+      })),
     };
-
-    for (const place of places) {
-      const dailyPlanItemsArray = [];
-      for (const placeItem of place) {
-        dailyPlanItemsArray.push({ placeId: placeItem.id, memo: '' });
-      }
-
-      const pushingObect = { dailyPlanItems: dailyPlanItemsArray };
-      sendingTravelPlanObject.dailyPlans.push(pushingObect);
-    }
 
     const response = await fetch(
       `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/plan`,
@@ -90,22 +75,31 @@ export default function OverallLeftSection({
     >
       <div
         id="tag-area"
-        className="w-[100px] flex flex-col justify-start items-end pt-[30px]"
+        className="w-[52px] flex flex-col justify-start items-end pt-4"
       >
+        <div className="bg-white w-[50px] h-[50px] flex flex-col justify-center items-center rounded-md hover:cursor-pointer">
+          <img
+            src="/assets/Arrow.svg"
+            alt="뒤로 가기"
+            className="w-10 h-10"
+            onClick={onBackClick}
+          />
+        </div>
+        <div className='pb-4'> </div>
         <p
-          className="bg-[#B1B1B1] w-[72px] h-[90px] flex justify-center items-center rounded-tl-lg rounded-bl-lg hover:cursor-pointer"
-          onClick={onBackClick}
+          className="bg-[#B1B1B1] w-[52px] h-[102px] flex flex-col justify-center items-center rounded-tl-2xl rounded-bl-2xl"
         >
-          전체일정
+          <span>전체</span>
+          <span>일정</span>
         </p>
       </div>
       <div
         id="places-area"
-        className="grow flex flex-col bg-white overflow-y-scroll scroll-box items-center"
+        className="grow flex flex-col bg-white w-[375px] mr-2 rounded-xl overflow-y-scroll scroll-box items-center"
       >
-        <div className="w-full flex justify-between items-center mb-10">
-          <span>여행지</span>
-          <span>
+        <div className="w-full flex justify-between items-center my-10">
+          <span className="text-4xl ml-6">여행지</span>
+          <span className="text-gray-400 text-xl mr-6">
             {formatDateToYYYYMMDD(
               localStorage.getItem('travelPlanStartDate') as string
             )}
@@ -115,22 +109,21 @@ export default function OverallLeftSection({
             )}
           </span>
         </div>
-        <span className="mb-5 w-full">저장된 장소</span>
-        {savedPlaces.map((savedPlacesItems, idx) => {
+        <span className="text-2xl font-text font-bold mb-5 w-full ml-12">저장된 장소</span>
+        {savedPlaces.map((savedPlacesItems) => {
           return (
             <div
               key={savedPlacesItems.id}
-              className="flex justify-between items-center w-[90%] mb-[30px]"
+              className="flex items-center w-[90%] mb-6"
             >
-              <div className="grow">
+              <div className="flex-shrink-0 mr-4">
                 <img
                   src={savedPlacesItems.imageUrl}
                   alt="장소"
-                  className="object-none rounded-xl"
+                  className="w-44 h-24 object-cover rounded-xl"
                 />
               </div>
-
-              <span id="장소 이름" className="min-w-[30%] text-center">
+              <span id="장소 이름" className="text-xl text-center w-full">
                 {savedPlacesItems.name}
               </span>
             </div>
@@ -138,7 +131,7 @@ export default function OverallLeftSection({
         })}
 
         <button
-          className="w-[80%] rounded-lg text-[25px] text-white bg-textPurple"
+          className="w-[80%] h-14 flex-shrink-0 rounded-lg text-[25px] text-white bg-textPurple mt-6 mb-2"
           onClick={handleSaveTravelPlan}
         >
           계획 저장하기
