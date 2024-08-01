@@ -120,3 +120,8 @@ export interface TravelPlanDetailsProps {
   travelStartDate: Date;
   travelEndDate: Date;
 }
+
+export interface overallRightSectionOneDayItemProps {
+  placeList: planListAllPlaceItem[];
+  dayIndex: number;
+}
