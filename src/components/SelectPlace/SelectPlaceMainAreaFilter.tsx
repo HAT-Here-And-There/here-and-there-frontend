@@ -1,4 +1,4 @@
-import { useAppDispatch } from '@context/store';
+import { useAppDispatch, useAppSelector } from '@context/store';
 import {
   changeMainArea,
   changeSigungu,
@@ -6,6 +6,11 @@ import {
 
 export default function SelectPlaceMainAreaFilter() {
   const dispatch = useAppDispatch();
+  const selectedMainArea = useAppSelector(
+    (state) => state.selectPlace.selectedMainArea
+  );
+
+  console.log(selectedMainArea);
   const regions = [
     '서울',
     '경기',
@@ -27,7 +32,9 @@ export default function SelectPlaceMainAreaFilter() {
       {regions.map((region, index) => (
         <div
           key={region}
-          className="hover:cursor-pointer hover:text-black active:text-black font-main text-lg font-color"
+          className={`hover:cursor-pointer hover:text-black active:text-black font-main text-lg font-color ${
+            index + 1 === selectedMainArea ? 'text-black' : null
+          }`}
           onClick={() => handleClickMainArea(index)}
         >
           {region}
