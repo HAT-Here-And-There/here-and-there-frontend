@@ -1,14 +1,25 @@
 import { travelPlanProp } from '@_types/type';
+import { useNavigate } from 'react-router-dom';
 
 export default function TravelPlanItem({
+  id,
   name,
   startDate,
   endDate,
 }: travelPlanProp) {
   const startDateList = startDate.split('-');
   const endDateList = endDate.split('-');
+  const navigate = useNavigate();
+
+  function moveToPlanDetailPage() {
+    navigate(`/travel-plan/${id}`);
+  }
+
   return (
-    <div className="flex w-[80%] h-[60px] justify-evenly items-center border-0  border-b-2 border-borderLightGray relative">
+    <div
+      className="flex w-[80%] h-[60px] justify-evenly items-center border-0  border-b-2 border-borderLightGray relative hover:cursor-pointer"
+      onClick={moveToPlanDetailPage}
+    >
       <img
         src="/assets/HAT.svg"
         alt="place hat logo"
