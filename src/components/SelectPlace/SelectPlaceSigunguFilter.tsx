@@ -5,7 +5,9 @@ import { MainEightRegion, sigunGuInfo } from '@_types/type';
 
 export default function SelectPlaceSigunguFilter() {
   const [allSigunGuList, setAllSigunGuList] = useState<sigunGuInfo[][]>([]);
-  const [showingSigunguList, setShowingSigunguList] = useState<sigunGuInfo[]>([]);
+  const [showingSigunguList, setShowingSigunguList] = useState<sigunGuInfo[]>(
+    []
+  );
 
   // mainAreaId는 1 ~ 8로, 서울 ~ 제주에 대응
   const selectedMainAreaId = useAppSelector(
@@ -25,8 +27,6 @@ export default function SelectPlaceSigunguFilter() {
       );
 
       const majorRegionData = await response.json();
-      // 백엔드 데이터 확인
-      console.log('Major Region Data:', majorRegionData);
 
       const sigunGuList = majorRegionData.map((regionData: MainEightRegion) => {
         return regionData.sigungu;
@@ -54,7 +54,7 @@ export default function SelectPlaceSigunguFilter() {
   }
 
   return (
-    <div className="flex text-black items-center justify-evenly bg-white-800 h-[85px] min-h-[85px] overflow-x-auto w-full">
+    <div className="flex text-black items-center justify-evenly bg-white-800 h-[85px] min-h-[85px] overflow-x-auto w-full scroll-box">
       <div className="flex whitespace-nowrap space-x-4 px-4 w-full">
         {selectedMainAreaId !== null &&
           showingSigunguList.map((city) => (
