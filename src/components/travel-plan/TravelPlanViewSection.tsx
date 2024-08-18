@@ -9,7 +9,6 @@ interface travelPlanViewSectionsProps {
 export default function TravelPlanViewSections({
   travelPlanData,
 }: travelPlanViewSectionsProps) {
-  console.log(travelPlanData);
   return (
     <section className="w-full flex h-[calc(100vh-160px)]">
       <TravelPlanViewLeftSection
@@ -17,7 +16,9 @@ export default function TravelPlanViewSections({
         startDate={travelPlanData?.startDate}
         endDate={travelPlanData?.endDate}
       />
-      <TravelPlanViewRightSection />
+      {travelPlanData?.dailyPlans && (
+        <TravelPlanViewRightSection dailyPlans={travelPlanData?.dailyPlans} />
+      )}
     </section>
   );
 }

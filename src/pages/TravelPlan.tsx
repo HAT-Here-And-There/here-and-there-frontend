@@ -14,7 +14,7 @@ interface dailyPlanItemsProps {
   };
 }
 
-interface dailPlansProps {
+export interface dailyPlansProps {
   id: number; // 특정 날짜 일정에 대한 id
   dayNumber: number; // 1부터 오름차순으로 올라감
   date: string;
@@ -26,7 +26,7 @@ export interface travelPlanDataProp {
   name: string;
   startDate: string;
   endDate: string;
-  dailyPlans: dailPlansProps[];
+  dailyPlans: dailyPlansProps[];
 }
 
 export default function TravelPlanPage() {

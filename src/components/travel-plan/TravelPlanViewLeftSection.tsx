@@ -36,8 +36,6 @@ export default function TravelPlanViewLeftSection({
     getLikedPlaces();
   }, []);
 
-  console.log(likedPlaces);
-
   return (
     <div className="w-[35%] flex flex-col items-center overflow-y-scroll scroll-box">
       <div className="w-full flex justify-between items-center px-2">
@@ -50,7 +48,7 @@ export default function TravelPlanViewLeftSection({
       {likedPlaces &&
         likedPlaces.map((element) => {
           return (
-            <div className="flex items-center w-[90%] mt-8">
+            <div className="flex items-center w-[90%] mt-8" key={element.id}>
               <img
                 src={element.imageUrl}
                 alt="liked place image"
