@@ -45,8 +45,6 @@ export default function TravelPlanPage() {
       }
       const data = await response.json();
 
-      console.log(data);
-
       setTravelPlanData(data);
     }
 
@@ -56,7 +54,10 @@ export default function TravelPlanPage() {
   return (
     <div className="flex flex-col h-full">
       <Header />
-      <TravelPlanViewSections travelPlanData={travelPlanData} />
+      <TravelPlanViewSections
+        travelPlanData={travelPlanData}
+        handleTravelPlanData={setTravelPlanData}
+      />
       <Footer />
     </div>
   );

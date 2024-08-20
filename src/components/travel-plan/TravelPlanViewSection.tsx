@@ -1,14 +1,22 @@
 import { travelPlanDataProp } from '@pages/TravelPlan';
 import TravelPlanViewLeftSection from './TravelPlanViewLeftSection';
 import TravelPlanViewRightSection from './TravelPlanViewRightSection';
+import { SetStateAction, Dispatch } from 'react';
+
+interface hocTravelPlanDataPropSignature {
+  (prevData: travelPlanDataProp): travelPlanDataProp;
+}
 
 interface travelPlanViewSectionsProps {
   travelPlanData: travelPlanDataProp | null;
+  handleTravelPlanData: Dispatch<SetStateAction<travelPlanDataProp | null>>;
 }
 
 export default function TravelPlanViewSections({
   travelPlanData,
+  handleTravelPlanData,
 }: travelPlanViewSectionsProps) {
+  console.log(travelPlanData);
   return (
     <section className="w-full flex h-[calc(100vh-160px)]">
       <TravelPlanViewLeftSection
@@ -17,7 +25,10 @@ export default function TravelPlanViewSections({
         endDate={travelPlanData?.endDate}
       />
       {travelPlanData?.dailyPlans && (
-        <TravelPlanViewRightSection dailyPlans={travelPlanData?.dailyPlans} />
+        <TravelPlanViewRightSection
+          dailyPlans={travelPlanData?.dailyPlans}
+          handleTravelPlanData={handleTravelPlanData}
+        />
       )}
     </section>
   );
