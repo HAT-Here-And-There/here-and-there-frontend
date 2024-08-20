@@ -23,7 +23,7 @@ function App() {
           <Route path=":placeId" element={<ChatRoomPage />} />
         </Route>
         <Route path="/travel-plan">
-          <Route path=":travelPlanName" element={<TravelPlanPage />} />
+          <Route path=":travelPlanId" element={<TravelPlanPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

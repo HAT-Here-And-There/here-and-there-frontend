@@ -22,9 +22,9 @@ export default function TravelPlansListSection() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
         setTravelPlanList(data);
       } else {
-        console.log(response);
         throw new Error('fetching travel plan list is failed!');
       }
     }
@@ -83,6 +83,7 @@ export default function TravelPlansListSection() {
         return (
           <TravelPlanItem
             key={travelplan.id}
+            id={travelplan.id}
             name={travelplan.name}
             startDate={travelplan.startDate}
             endDate={travelplan.endDate}
