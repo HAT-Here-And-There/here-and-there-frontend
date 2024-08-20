@@ -6,6 +6,12 @@ interface overallRightSectionOneDayItemProps {
   onMoveUp: (dayIndex: number, placeIndex: number) => void;
   onMoveDown: (dayIndex: number, placeIndex: number) => void;
   onDelete: (dayIndex: number, placeIndex: number) => void;
+  onAddPlace: (
+    dayIndex: number,
+    placeIndex: number,
+    newPlace: planListAllPlaceItem
+  ) => void;
+  selectedPlace: planListAllPlaceItem | null;
 }
 
 export default function OverallRightSectionOneDayItem({
@@ -14,6 +20,8 @@ export default function OverallRightSectionOneDayItem({
   onMoveUp,
   onMoveDown,
   onDelete,
+  onAddPlace,
+  selectedPlace,
 }: overallRightSectionOneDayItemProps) {
   return (
     <div className="w-fit min-w-[500px] h-auto flex flex-col pt-5 pl-10 border-t-[5px] border-r-[1px] border-b-[5px] border-l-[1px] border-black rounded-lg bg-white overflow-y-auto">
@@ -24,17 +32,22 @@ export default function OverallRightSectionOneDayItem({
         <div className="absolute left-4 top-0 bottom-0 w-[1px] bg-black"></div>
         {placeList.map((placeListItem, placeIndex) => (
           <div
-            key={placeListItem.id}
+            key={`${placeListItem.id}-${placeIndex}`}
             className="flex w-full relative mb-12 items-start"
           >
             {/* 장소 추가 버튼 퍼블리싱 */}
-            <div className="absolute left-1 flex items-center">
-              <img
-                src="/assets/Add-icon.svg"
-                alt="장소 추가"
-                className="w-6 h-6"
-              />
-            </div>
+            {selectedPlace && (
+              <button
+                onClick={() => onAddPlace(dayIndex, placeIndex, selectedPlace)}
+                className="absolute left-1 flex items-center"
+              >
+                <img
+                  src="/assets/Add-icon.svg"
+                  alt="장소 추가"
+                  className="w-6 h-6 mr-2"
+                />
+              </button>
+            )}
             {/* 장소 정보 및 장소 순서 변경 버튼 */}
             <div className="flex-grow flex flex-col ml-10">
               <div className="flex justify-between items-center">
