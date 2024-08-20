@@ -45,6 +45,8 @@ export default function TravelPlanPage() {
       }
       const data = await response.json();
 
+      console.log(data);
+
       setTravelPlanData(data);
     }
 

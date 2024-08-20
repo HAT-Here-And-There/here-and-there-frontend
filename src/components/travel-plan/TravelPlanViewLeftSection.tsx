@@ -60,6 +60,9 @@ export default function TravelPlanViewLeftSection({
             </div>
           );
         })}
+      <button className="w-[80%] h-14 flex-shrink-0 rounded-lg font-main text-[25px] text-white bg-textPurple mt-6 mb-2">
+        계획 저장하기
+      </button>
     </div>
   );
 }
