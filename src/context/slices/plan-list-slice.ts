@@ -35,11 +35,22 @@ export const planListSlice = createSlice({
       state.places[dayIndex].splice(placeIndex, 0, newPlace);
     },
     setPlaces: (state, action: PayloadAction<planListAllPlaceItem[][]>) => {
-      state.places = action.payload;  // 전체 상태를 업데이트하는 새로운 액션
+      state.places = action.payload;
+    },
+    updateMemo: (
+      state,
+      action: PayloadAction<{
+        dayIndex: number;
+        placeIndex: number;
+        memo: string;
+      }>
+    ) => {
+      const { dayIndex, placeIndex, memo } = action.payload;
+      state.places[dayIndex][placeIndex].memo = memo;
     },
   },
 });
 
-export const { selectPlace, addPlaceToDay, setPlaces } = planListSlice.actions;
+export const { selectPlace, addPlaceToDay, setPlaces, updateMemo } = planListSlice.actions;
 
 export default planListSlice.reducer;

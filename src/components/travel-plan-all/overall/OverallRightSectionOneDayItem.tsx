@@ -1,4 +1,6 @@
 import { planListAllPlaceItem } from '@_types/type';
+import { useAppDispatch } from '@context/store';
+import { updateMemo } from '@context/slices/plan-list-slice';
 
 interface overallRightSectionOneDayItemProps {
   placeList: planListAllPlaceItem[];
@@ -23,6 +25,12 @@ export default function OverallRightSectionOneDayItem({
   onAddPlace,
   selectedPlace,
 }: overallRightSectionOneDayItemProps) {
+  const dispatch = useAppDispatch();
+
+  const handleMemoChange = (dayIndex: number, placeIndex: number, memo: string) => {
+    dispatch(updateMemo({ dayIndex, placeIndex, memo }));
+  };
+
   return (
     <div className="w-fit min-w-[500px] h-auto flex flex-col pt-5 pl-10 border-t-[5px] border-r-[1px] border-b-[5px] border-l-[1px] border-black rounded-lg bg-white overflow-y-auto">
       <div className="mb-6 text-black text-xl font-main">
@@ -90,11 +98,15 @@ export default function OverallRightSectionOneDayItem({
                   className="w-[305px] h-[132px] rounded-xl object-cover"
                 />
               </div>
-              {/* 메모장 기능 (추후 논의 필요함) */}
+              {/* 메모장 기능 */}
               <div className="mt-2 flex justify-center">
                 <textarea
                   className="w-[305px] h-[50px] rounded-xl border border-gray-300 p-2"
                   placeholder="메모장"
+                  value={placeListItem.memo || ''}
+                  onChange={(e) =>
+                    handleMemoChange(dayIndex, placeIndex, e.target.value)
+                  }
                 />
               </div>
             </div>
