@@ -1,4 +1,8 @@
-import { dailyPlansProps, travelPlanDataProp } from '@pages/TravelPlan';
+import {
+  dailyPlansProps,
+  travelPlanDataProp,
+  dailyPlanItemsProps,
+} from '@pages/TravelPlan';
 import { SetStateAction, Dispatch } from 'react';
 
 interface travelPlanViewRightSectionProps {
@@ -6,11 +10,33 @@ interface travelPlanViewRightSectionProps {
   handleTravelPlanData: Dispatch<SetStateAction<travelPlanDataProp | null>>;
 }
 
+const swapTwoElementInArray = (
+  arr: Array<dailyPlanItemsProps>,
+  firstElementIdx: number,
+  secondElementIdx: number
+): Array<dailyPlanItemsProps> => {
+  if (
+    firstElementIdx >= 0 &&
+    firstElementIdx < arr.length &&
+    secondElementIdx >= 0 &&
+    secondElementIdx < arr.length
+  ) {
+    // 요소들을 스왑
+    [arr[firstElementIdx], arr[secondElementIdx]] = [
+      arr[secondElementIdx],
+      arr[firstElementIdx],
+    ];
+  } else {
+    console.error('인덱스가 배열의 범위를 벗어났습니다.');
+  }
+
+  return arr;
+};
+
 export default function TravelPlanViewRightSection({
   dailyPlans,
   handleTravelPlanData,
 }: travelPlanViewRightSectionProps) {
-  console.log(dailyPlans);
   const modifyPlanFunction = (
     dayIndex: number,
     placeOrderIndex: number,
@@ -18,57 +44,57 @@ export default function TravelPlanViewRightSection({
   ): void => {
     handleTravelPlanData((prevData) => {
       const newDailyPlansArray: dailyPlansProps[] = [];
-      for (let i = 0; i < dailyPlans.length; i++) {
-        if (i !== dayIndex) {
-          newDailyPlansArray.push(dailyPlans[i]);
-        } else {
-          if (type === 'up') {
-            if (placeOrderIndex === 0) {
-              newDailyPlansArray.push(dailyPlans[i]);
-            } else {
-              const temp = JSON.parse(
-                JSON.stringify(dailyPlans[i].dailyPlanItems[placeOrderIndex])
+      if (prevData?.dailyPlans) {
+        for (let i = 0; i < dailyPlans.length; i++) {
+          if (i !== dayIndex) {
+            newDailyPlansArray.push(dailyPlans[i]);
+          } else {
+            if (type === 'up') {
+              if (placeOrderIndex === 0) {
+                newDailyPlansArray.push(dailyPlans[dayIndex]);
+              } else {
+                const tmpArray = swapTwoElementInArray(
+                  [...prevData.dailyPlans[dayIndex].dailyPlanItems],
+                  placeOrderIndex,
+                  placeOrderIndex - 1
+                );
+                newDailyPlansArray.push({
+                  date: dailyPlans[dayIndex].date,
+                  dayNumber: dailyPlans[dayIndex].dayNumber,
+                  id: dailyPlans[dayIndex].id,
+                  dailyPlanItems: tmpArray,
+                });
+              }
+            } else if (type === 'down') {
+              if (
+                placeOrderIndex ===
+                dailyPlans[dayIndex].dailyPlanItems.length - 1
+              ) {
+                newDailyPlansArray.push(dailyPlans[dayIndex]);
+              } else {
+                const tmpArray = swapTwoElementInArray(
+                  [...prevData.dailyPlans[dayIndex].dailyPlanItems],
+                  placeOrderIndex,
+                  placeOrderIndex + 1
+                );
+                newDailyPlansArray.push({
+                  date: dailyPlans[dayIndex].date,
+                  dayNumber: dailyPlans[dayIndex].dayNumber,
+                  id: dailyPlans[dayIndex].id,
+                  dailyPlanItems: tmpArray,
+                });
+              }
+            } else if (type === 'delete') {
+              const tmpDailyPlanItems = dailyPlans[i].dailyPlanItems.filter(
+                (element, i) => i !== placeOrderIndex
               );
-              dailyPlans[i].dailyPlanItems[placeOrderIndex] =
-                dailyPlans[i].dailyPlanItems[placeOrderIndex - 1];
-              dailyPlans[i].dailyPlanItems[placeOrderIndex - 1] = temp;
               newDailyPlansArray.push({
                 date: dailyPlans[i].date,
                 dayNumber: dailyPlans[i].dayNumber,
                 id: dailyPlans[i].id,
-                dailyPlanItems: dailyPlans[i].dailyPlanItems,
+                dailyPlanItems: tmpDailyPlanItems,
               });
             }
-          } else if (type === 'down') {
-            if (
-              placeOrderIndex ===
-              dailyPlans[placeOrderIndex].dailyPlanItems.length - 1
-            ) {
-              newDailyPlansArray.push(dailyPlans[i]);
-            } else {
-              const temp = JSON.parse(
-                JSON.stringify(dailyPlans[i].dailyPlanItems[placeOrderIndex])
-              );
-              dailyPlans[i].dailyPlanItems[placeOrderIndex] =
-                dailyPlans[i].dailyPlanItems[placeOrderIndex + 1];
-              dailyPlans[i].dailyPlanItems[placeOrderIndex + 1] = temp;
-              newDailyPlansArray.push({
-                date: dailyPlans[i].date,
-                dayNumber: dailyPlans[i].dayNumber,
-                id: dailyPlans[i].id,
-                dailyPlanItems: dailyPlans[i].dailyPlanItems,
-              });
-            }
-          } else if (type === 'delete') {
-            const tmpDailyPlanItems = dailyPlans[i].dailyPlanItems.filter(
-              (element, i) => i !== placeOrderIndex
-            );
-            newDailyPlansArray.push({
-              date: dailyPlans[i].date,
-              dayNumber: dailyPlans[i].dayNumber,
-              id: dailyPlans[i].id,
-              dailyPlanItems: tmpDailyPlanItems,
-            });
           }
         }
       }
@@ -88,7 +114,7 @@ export default function TravelPlanViewRightSection({
         return (
           <div
             className="border-x-[1px] border-y-[5px] rounded-lg overflow-y-scroll border-black min-w-[500px] flex flex-col items-center gap-y-5 pb-10"
-            key={planElement.id}
+            key={idx}
           >
             <div className="w-[65%] mt-[35px] flex justify-start items-center">
               Day {planElement.dayNumber}
@@ -97,7 +123,7 @@ export default function TravelPlanViewRightSection({
               return (
                 <div
                   className="w-fit h-fit flex flex-col items-center gap-y-3"
-                  key={element.id}
+                  key={index}
                 >
                   <div className="w-full flex justify-between items-center">
                     {element.place.name}

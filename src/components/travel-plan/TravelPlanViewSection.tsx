@@ -16,7 +16,6 @@ export default function TravelPlanViewSections({
   travelPlanData,
   handleTravelPlanData,
 }: travelPlanViewSectionsProps) {
-  console.log(travelPlanData);
   return (
     <section className="w-full flex h-[calc(100vh-160px)]">
       <TravelPlanViewLeftSection
