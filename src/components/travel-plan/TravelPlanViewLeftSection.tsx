@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { fetchSavedPlaces } from '@utils/fetchFunctions';
+import { travelPlanDataProp } from '@pages/TravelPlan';
 
 interface travelPlanViewLeftSectionProps {
-  name: string | undefined;
-  startDate: string | undefined;
-  endDate: string | undefined;
+  travelPlanData: travelPlanDataProp | null;
+  travelPlanId: number;
 }
 
 interface likedPlacesProp {
@@ -14,10 +14,10 @@ interface likedPlacesProp {
 }
 
 export default function TravelPlanViewLeftSection({
-  name,
-  startDate,
-  endDate,
+  travelPlanData,
+  travelPlanId,
 }: travelPlanViewLeftSectionProps) {
+  console.log(travelPlanData);
   const [likedPlaces, setLikedPlaces] = useState<likedPlacesProp[] | null>(
     null
   );
@@ -36,12 +36,45 @@ export default function TravelPlanViewLeftSection({
     getLikedPlaces();
   }, []);
 
+  const patchTravelPlan = async (travelPlanId: number) => {
+    const sendingObject = {
+      dailyPlans: travelPlanData?.dailyPlans.map((element, idx) => {
+        return {
+          id: element.id,
+          dailyPlanItems: element.dailyPlanItems,
+        };
+      }),
+    };
+
+    try {
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_BACKEND_DOMAIN
+        }/tour/plan/${travelPlanId}/daily-plans`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify(sendingObject),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('patch 실패입니다!');
+      }
+
+      const data = await response.json();
+
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="w-[35%] flex flex-col items-center overflow-y-scroll scroll-box">
       <div className="w-full flex justify-between items-center px-2">
-        <span className="font-main text-[32px]">{name}</span>
+        <span className="font-main text-[32px]">{travelPlanData?.name}</span>
         <p className="font-main text-[20px] text-gray-400">
-          {startDate} ~ {endDate}
+          {travelPlanData?.startDate} ~ {travelPlanData?.endDate}
         </p>
       </div>
       <div className="font-main text-2xl mt-5">저장된 장소</div>
@@ -60,7 +93,10 @@ export default function TravelPlanViewLeftSection({
             </div>
           );
         })}
-      <button className="w-[80%] h-14 flex-shrink-0 rounded-lg font-main text-[25px] text-white bg-textPurple mt-6 mb-2">
+      <button
+        className="w-[80%] h-14 flex-shrink-0 rounded-lg font-main text-[25px] text-white bg-textPurple mt-6 mb-2"
+        onClick={() => patchTravelPlan(travelPlanId)}
+      >
         계획 저장하기
       </button>
     </div>
