@@ -51,14 +51,13 @@ export default function TravelPlanPage() {
     getSpecificPlanData();
   }, []);
 
-  console.log(travelPlanData);
-
   return (
     <div className="flex flex-col h-full">
       <Header />
       <TravelPlanViewSections
         travelPlanData={travelPlanData}
         handleTravelPlanData={setTravelPlanData}
+        travelPlanId={Number(travelPlanId)}
       />
       <Footer />
     </div>

@@ -10,18 +10,19 @@ interface hocTravelPlanDataPropSignature {
 interface travelPlanViewSectionsProps {
   travelPlanData: travelPlanDataProp | null;
   handleTravelPlanData: Dispatch<SetStateAction<travelPlanDataProp | null>>;
+  travelPlanId: number;
 }
 
 export default function TravelPlanViewSections({
   travelPlanData,
   handleTravelPlanData,
+  travelPlanId,
 }: travelPlanViewSectionsProps) {
   return (
     <section className="w-full flex h-[calc(100vh-160px)]">
       <TravelPlanViewLeftSection
-        name={travelPlanData?.name}
-        startDate={travelPlanData?.startDate}
-        endDate={travelPlanData?.endDate}
+        travelPlanData={travelPlanData}
+        travelPlanId={travelPlanId}
       />
       {travelPlanData?.dailyPlans && (
         <TravelPlanViewRightSection
