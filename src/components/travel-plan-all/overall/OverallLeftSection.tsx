@@ -3,6 +3,8 @@ import { planListAllPlaceItem } from '@_types/type';
 import { useState, useEffect } from 'react';
 import { fetchSavedPlaces } from '@utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '@context/store';
+import { selectPlace } from '@context/slices/plan-list-slice';
 
 interface overallLeftSectionProp {
   onBackClick: () => void;
@@ -21,6 +23,8 @@ export default function OverallLeftSection({
 }: overallLeftSectionProp) {
   const [savedPlaces, setSavedPlaces] = useState<planListAllPlaceItem[]>([]);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const selectedPlace = useAppSelector((state) => state.planList.selectedPlace);
 
   useEffect(() => {
     const loadSavedPlaces = async () => {
@@ -85,10 +89,8 @@ export default function OverallLeftSection({
             onClick={onBackClick}
           />
         </div>
-        <div className='pb-4'> </div>
-        <p
-          className="bg-[#B1B1B1] w-[52px] h-[102px] flex flex-col justify-center items-center rounded-tl-2xl rounded-bl-2xl"
-        >
+        <div className="pb-4"> </div>
+        <p className="bg-[#B1B1B1] w-[52px] h-[102px] flex flex-col justify-center items-center rounded-tl-2xl rounded-bl-2xl">
           <span>전체</span>
           <span>일정</span>
         </p>
@@ -109,12 +111,19 @@ export default function OverallLeftSection({
             )}
           </span>
         </div>
-        <span className="text-2xl font-text font-bold mb-5 w-full ml-12">저장된 장소</span>
+        <span className="text-2xl font-text font-bold mb-5 w-full ml-12">
+          저장된 장소
+        </span>
         {savedPlaces.map((savedPlacesItems) => {
           return (
             <div
               key={savedPlacesItems.id}
-              className="flex items-center w-[90%] mb-6"
+              className={`flex items-center w-[90%] mb-6 ${
+                selectedPlace?.id === savedPlacesItems.id
+                  ? 'ring-2 ring-planListRed'
+                  : ''
+              }`}
+              onClick={() => dispatch(selectPlace(savedPlacesItems))}
             >
               <div className="flex-shrink-0 mr-4">
                 <img

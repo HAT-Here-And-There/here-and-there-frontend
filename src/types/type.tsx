@@ -98,7 +98,9 @@ export interface planListAllPlaceItem {
   id: string;
   name: string;
   imageUrl: string;
+  memo?: string; 
 }
+
 
 export interface PlaceChatProps {
   place: SelectPlacePlace;
