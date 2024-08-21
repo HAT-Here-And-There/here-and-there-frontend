@@ -32,7 +32,7 @@ export default function BookmarkedPlaceList({
     <div className="h-full w-full flex">
       <div
         id="day-selectionarea"
-        className="w-[65px] h-ful flex flex-col items-end bg-gray-200 pt-3"
+        className="w-[65px] h-full flex flex-col items-end bg-gray-200 pt-3"
       >
         {[...Array(totalTravelDay).keys()]
           .map((i) => i + 1)
@@ -40,20 +40,13 @@ export default function BookmarkedPlaceList({
             <div
               key={dayIndex}
               onClick={() => handleSelectedDay(dayIndex - 1)}
-              className="bg-[#ffabab] mb-3 text-2 w-[90%] h-12 rounded-tl-lg rounded-bl-lg flex justify-center items-center"
+              className="bg-[#ffabab] mb-3 text-2 w-[90%] h-12 rounded-tl-lg rounded-bl-lg flex justify-center items-center cursor-pointer"
             >
               {dayIndex}일 차
             </div>
           ))}
       </div>
-      <div
-        className="bg-white grow flex flex-col items-center scroll-box border"
-        style={{
-          borderRight: '1px solid #000',
-          borderBottom: '5px solid #000',
-          borderLeft: '1px solid #000',
-        }}
-      >
+      <div className="bg-white grow flex flex-col items-center overflow-auto border border-t-0 border-black border-b-[5px]">
         {places &&
           places.map((place, index) => {
             return (
@@ -63,7 +56,7 @@ export default function BookmarkedPlaceList({
               >
                 <div className="flex justify-between items-center">
                   <h2
-                    className="text-lg font-bold font-main"
+                    className="text-lg font-bold font-main cursor-pointer"
                     onClick={() => onPlaceClick(place.id, places)}
                   >
                     {place.name}
@@ -74,7 +67,7 @@ export default function BookmarkedPlaceList({
                       disabled={index === 0}
                       className="px-2 py-1 rounded disabled:opacity-50"
                     >
-                      <img src="/assets/UP.svg" alt="위로" className="" />
+                      <img src="/assets/UP.svg" alt="위로" />
                     </button>
                     <button
                       onClick={() => onMoveDown(index)}
@@ -95,7 +88,7 @@ export default function BookmarkedPlaceList({
                 <img
                   src={place.imageUrl}
                   alt="장소 사진"
-                  className="w-[305px] h-[150px] object-cover"
+                  className="w-[305px] h-[150px] object-cover cursor-pointer"
                   onClick={() => onPlaceClick(place.id, places)}
                 />
               </div>
