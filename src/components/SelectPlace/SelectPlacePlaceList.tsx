@@ -74,5 +74,10 @@ export default function SelectPlacePlaceList() {
     }
   }, [selectedMainAreaId, selectedSelectedSigungu]);
 
-  return <SelectPlacePlaceListComponent places={selectPlace} />;
+  return (
+    <SelectPlacePlaceListComponent
+      places={selectPlace}
+      setSelectPlace={setSelectPlace}
+    />
+  );
 }
