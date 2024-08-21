@@ -4,7 +4,7 @@ import Header from '@components/all/Header';
 import Footer from '@components/all/Footer';
 import TravelPlanViewSections from '@components/travel-plan/TravelPlanViewSection';
 
-interface dailyPlanItemsProps {
+export interface dailyPlanItemsProps {
   id: number; // 백엔드에서 부여한 고유 ID임
   memo: string;
   place: {
@@ -54,7 +54,11 @@ export default function TravelPlanPage() {
   return (
     <div className="flex flex-col h-full">
       <Header />
-      <TravelPlanViewSections travelPlanData={travelPlanData} />
+      <TravelPlanViewSections
+        travelPlanData={travelPlanData}
+        handleTravelPlanData={setTravelPlanData}
+        travelPlanId={Number(travelPlanId)}
+      />
       <Footer />
     </div>
   );
