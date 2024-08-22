@@ -75,7 +75,7 @@ export default function OverallLeftSection({
   return (
     <div
       id="overall-left-section"
-      className="w-[35%] bg-[#F3F5FF] flex font-main"
+      className="w-[35%] bg-planListGray flex font-main"
     >
       <div
         id="tag-area"

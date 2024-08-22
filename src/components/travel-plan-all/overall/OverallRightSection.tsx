@@ -65,7 +65,7 @@ export default function OverallRightSection({
   return (
     <div
       id="overall-right-section"
-      className="w-[65%] h-full travel-plan-scroll-box flex font-main overflow-x-auto"
+      className="w-[65%] h-full travel-plan-scroll-box flex bg-planListGray font-main overflow-x-auto"
     >
       {placeList.map((place, idx) => (
         <OverallRightSectionOneDayItem
