@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { SelectPlacePlaceProps, SelectPlacePlace } from '@_types/type';
+import {
+  SelectPlacePlaceProps,
+  SelectPlacePlace,
+  chatProps,
+} from '@_types/type';
 import { useNavigate } from 'react-router-dom';
 import { Dispatch, SetStateAction } from 'react';
 import { useAppSelector } from '@context/store';
@@ -7,6 +11,15 @@ import { useAppSelector } from '@context/store';
 interface selectPlacePlacePlaceListCompontProp extends SelectPlacePlaceProps {
   setSelectPlace: Dispatch<SetStateAction<SelectPlacePlace[]>>;
 }
+
+// 특정 장소의 채팅 개수를 세는 함수
+const countChatNumber = (specificPlaceRespons: chatProps[]): number => {
+  const totalChatCount = specificPlaceRespons.reduce((prev, element) => {
+    return (prev += 1 + element.replies.length);
+  }, 0);
+
+  return totalChatCount;
+};
 
 export default function SelectPlacePlaceListComponent({
   places,
@@ -162,6 +175,7 @@ export default function SelectPlacePlaceListComponent({
     fetchMoreData();
   }, [page]);
 
+  console.log(places);
   return (
     <div className="bg-dftBackgroundGray flex justify-center grow">
       <div className="w-full flex flex-col items-center pt-9 rounded-lg overflow-scroll scroll-box">
@@ -198,11 +212,16 @@ export default function SelectPlacePlaceListComponent({
                   className="w-11 h-12 mb-2"
                 />
               </button>
-              <img
-                src="/assets/Message.svg"
-                alt="댓글 개수"
-                className="w-10 h-10"
-              />
+              <div className="relative">
+                <img
+                  src="/assets/Message.svg"
+                  alt="댓글 개수"
+                  className="w-10 h-10 z-[10] object-fill"
+                />
+                <span className="absolute w-5 h-5 top-[8px] left-[13px] flex justify-center items-center">
+                  {place.chatCount}
+                </span>
+              </div>
             </div>
           </div>
         ))}
