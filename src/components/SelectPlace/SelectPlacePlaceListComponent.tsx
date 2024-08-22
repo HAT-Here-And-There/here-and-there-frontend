@@ -206,7 +206,7 @@ export default function SelectPlacePlaceListComponent({
             </div>
           </div>
         ))}
-        {isLoading && <div>Loading...</div>}
+        {/* {isLoading && <div>Loading...</div>} */}
         <div id="observer" style={{ height: '10px' }}></div>
       </div>
     </div>

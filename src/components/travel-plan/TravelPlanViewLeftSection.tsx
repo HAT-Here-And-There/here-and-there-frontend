@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchSavedPlaces } from '@utils/fetchFunctions';
 import { travelPlanDataProp } from '@pages/TravelPlan';
+import { useNavigate } from 'react-router-dom';
 
 interface travelPlanViewLeftSectionProps {
   travelPlanData: travelPlanDataProp | null;
@@ -17,10 +18,10 @@ export default function TravelPlanViewLeftSection({
   travelPlanData,
   travelPlanId,
 }: travelPlanViewLeftSectionProps) {
-  console.log(travelPlanData);
   const [likedPlaces, setLikedPlaces] = useState<likedPlacesProp[] | null>(
     null
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getLikedPlaces() {
@@ -38,10 +39,14 @@ export default function TravelPlanViewLeftSection({
 
   const patchTravelPlan = async (travelPlanId: number) => {
     const sendingObject = {
-      dailyPlans: travelPlanData?.dailyPlans.map((element, idx) => {
+      dailyPlans: travelPlanData?.dailyPlans.map((element) => {
         return {
-          id: element.id,
-          dailyPlanItems: element.dailyPlanItems,
+          dailyPlanItems: element.dailyPlanItems.map((element) => {
+            return {
+              placeId: element.place.id,
+              memo: element.memo,
+            };
+          }),
         };
       }),
     };
@@ -53,17 +58,17 @@ export default function TravelPlanViewLeftSection({
         }/tour/plan/${travelPlanId}/daily-plans`,
         {
           method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify(sendingObject),
         }
       );
-
       if (!response.ok) {
         throw new Error('patch 실패입니다!');
+      } else {
+        navigate('/travel-plans-list');
       }
-
-      const data = await response.json();
-
-      console.log(data);
     } catch (error) {
       console.log(error);
     }
