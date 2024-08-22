@@ -6,7 +6,6 @@ export default function MainEightRegionList() {
   const [regionList, setRegionList] = useState<MainEightRegion[]>([]);
 
   useEffect(() => {
-    // 임시 데이터를 사용하여 상태 설정
     async function getEightRegionImage() {
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/major-region`
