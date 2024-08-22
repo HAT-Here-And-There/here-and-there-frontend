@@ -15,7 +15,11 @@ export default function TravelPlanItem({
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [newPlanName, setNewPlanName] = useState(name);
+  const [newStartDate, setNewStartDate] = useState(startDate);
+  const [newEndDate, setNewEndDate] = useState(endDate);
   const [currentName, setCurrentName] = useState(name);
+  const [currentStartDate, setCurrentStartDate] = useState(startDate);
+  const [currentEndDate, setCurrentEndDate] = useState(endDate);
 
   function moveToPlanDetailPage() {
     if (!isEditModalOpen) {
@@ -23,23 +27,27 @@ export default function TravelPlanItem({
     }
   }
 
-  function handleEditName() {
+  function handleEditPlan() {
     fetch(`${import.meta.env.VITE_BACKEND_DOMAIN}/tour/plan/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: newPlanName, // 이름 변경 요청
+        name: newPlanName,
+        startDate: newStartDate,
+        endDate: newEndDate,
       }),
     })
       .then((response) => {
         if (response.ok) {
-          alert('계획서 이름이 성공적으로 수정되었습니다.');
+          alert('계획서가 성공적으로 수정되었습니다.');
           setCurrentName(newPlanName); // 수정된 이름 상태 업데이트
+          setCurrentStartDate(newStartDate); // 수정된 시작일 상태 업데이트
+          setCurrentEndDate(newEndDate); // 수정된 종료일 상태 업데이트
           setIsEditModalOpen(false);
         } else {
-          throw new Error('계획서 이름 수정에 실패했습니다.');
+          throw new Error('계획서 수정에 실패했습니다.');
         }
       })
       .catch((error) => {
@@ -68,8 +76,13 @@ export default function TravelPlanItem({
         {currentName} {/* 수정된 여행 계획서 이름 표시 */}
       </p>
       <p id="travel-date" className="w-[40%] text-center">
-        {`${startDateList[0]}년 ${startDateList[1]}월 ${startDateList[2]}일`}~
-        {`${endDateList[0]}년 ${endDateList[1]}월 ${endDateList[2]}일`}
+        {`${currentStartDate.split('-')[0]}년 ${
+          currentStartDate.split('-')[1]
+        }월 ${currentStartDate.split('-')[2]}일`}
+        ~
+        {`${currentEndDate.split('-')[0]}년 ${currentEndDate.split('-')[1]}월 ${
+          currentEndDate.split('-')[2]
+        }일`}
       </p>
       <p id="travel-extra-work" className="w-[30%] text-center">
         <img
@@ -83,11 +96,11 @@ export default function TravelPlanItem({
         />
       </p>
 
-      {/* 여행 계획서 이름 편집 모달 */}
+      {/* 여행 계획서 이름 및 날짜 편집 모달 */}
       <Modal
         isOpen={isEditModalOpen}
         onRequestClose={handleModalClose}
-        contentLabel="계획서 이름 편집"
+        contentLabel="계획서 편집"
         style={{
           content: {
             top: '50%',
@@ -102,11 +115,26 @@ export default function TravelPlanItem({
         }}
         shouldCloseOnOverlayClick={true}
       >
-        <h2 className="text-lg font-bold mb-4">계획서 이름 편집</h2>
+        <h2 className="text-lg font-bold mb-4">계획서 편집</h2>
+        <label className="block mb-2">계획서 이름</label>
         <input
           type="text"
           value={newPlanName}
           onChange={(e) => setNewPlanName(e.target.value)}
+          className="w-full p-2 mb-4 border border-gray-300 rounded"
+        />
+        <label className="block mb-2">출발 날짜</label>
+        <input
+          type="date"
+          value={newStartDate}
+          onChange={(e) => setNewStartDate(e.target.value)}
+          className="w-full p-2 mb-4 border border-gray-300 rounded"
+        />
+        <label className="block mb-2">도착 날짜</label>
+        <input
+          type="date"
+          value={newEndDate}
+          onChange={(e) => setNewEndDate(e.target.value)}
           className="w-full p-2 mb-4 border border-gray-300 rounded"
         />
         <div className="flex justify-end">
@@ -117,8 +145,8 @@ export default function TravelPlanItem({
             취소
           </button>
           <button
-            onClick={handleEditName}
-            className="bg-blue-500 text-white p-2 rounded"
+            onClick={handleEditPlan}
+            className="bg-textPurple text-white p-2 rounded"
           >
             저장
           </button>

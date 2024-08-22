@@ -16,24 +16,24 @@ export default function TravelPlansListSection() {
 
   useEffect(() => {
     async function getTravelPlanList() {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/plan`
-      );
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_DOMAIN}/tour/plan`
+        );
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        setTravelPlanList(data);
-      } else {
-        throw new Error('fetching travel plan list is failed!');
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          setTravelPlanList(data);
+        } else {
+          throw new Error('여행 계획 목록을 가져오는 데 실패했습니다.');
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
 
-    try {
-      getTravelPlanList();
-    } catch (error) {
-      console.log(error);
-    }
+    getTravelPlanList();
   }, []);
 
   const customModalStyles: ReactModal.Styles = {
@@ -54,7 +54,7 @@ export default function TravelPlansListSection() {
       zIndex: '150',
       padding: '0',
       border: 'none',
-      top: '15%', // 너비와 높이를 고려하여 중앙에 오게 (100 - 30) / 2를 한 것
+      top: '15%', 
       left: '15%',
       right: '15%',
       bottom: '15%',
