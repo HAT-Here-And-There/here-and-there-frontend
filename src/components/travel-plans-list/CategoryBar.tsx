@@ -7,7 +7,7 @@ export default function CategoryBar() {
       <p className="w-[30%] text-center">이름</p>
       <p className="w-[40%] text-center">여행 날짜</p>
 
-      <p className="w-[30%] text-center">추가 작업</p>
+      <p className="w-[30%] text-center">편집하기</p>
     </div>
   );
 }
