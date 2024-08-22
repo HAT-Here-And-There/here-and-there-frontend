@@ -71,6 +71,7 @@ export interface selectedPlaceFilterProps {
 
 export interface SelectPlacePlace {
   // select-place 페이지에서 필터된 장소목록을 보여주는 요소들에 대한 타입. 더 좋은 네이밍이 있으면 바꾸고, 연관 코드에 대한 수정 요망
+  chatCount: number;
   id: string;
   name: string;
   imageUrl: string;
