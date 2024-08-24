@@ -26,6 +26,8 @@ export default function OverallLeftSection({
   const dispatch = useAppDispatch();
   const selectedPlace = useAppSelector((state) => state.planList.selectedPlace);
 
+  const globalPlaces = useAppSelector((state) => state.planList.places);
+
   useEffect(() => {
     const loadSavedPlaces = async () => {
       try {
@@ -43,7 +45,7 @@ export default function OverallLeftSection({
       name: travelPlanName,
       startDate: formatDateToYYYYMMDD(travelStartDate.toDateString()),
       endDate: formatDateToYYYYMMDD(travelEndDate.toDateString()),
-      dailyPlans: places.map((place) => ({
+      dailyPlans: globalPlaces.map((place) => ({
         dailyPlanItems: place.map((placeItem) => ({
           placeId: placeItem.id,
           memo: '',
